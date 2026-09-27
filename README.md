@@ -1,290 +1,166 @@
-# 🚀 OpportunityAI — Smart Student Career & Opportunity Matcher
+# OPPORTUNEX — Personal Opportunity Command Center
+> *"Your next opportunity, already looking for you."*
 
-> An AI-powered hackathon platform that intelligently matches students to internships, hackathons, scholarships, courses, and open-source programs using a smart skill-interest scoring algorithm.
+[![FIT-FEST 2026](https://img.shields.io/badge/Hackathon-FIT--FEST%202026-blueviolet?style=for-the-badge)](https://github.com/Yash293-myc/FIT-FEST-2K26)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16.3-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Docker Cloud Run](https://img.shields.io/badge/Google_Cloud_Run-Ready-4285F4?style=for-the-badge&logo=google-cloud)](https://cloud.google.com/run)
 
-![OpportunityAI Preview](./public/preview.png)
+Built for **FIT-FEST 2026 HACKATHON** by **Yash** ([@Yash293-myc](https://github.com/Yash293-myc)) • Contact: [yashsongire293@gmail.com](mailto:yashsongire293@gmail.com)
 
 ---
 
-## 🎯 Problem Statement
+## 🎯 Challenge & Problem Statement
 
-Students across India and globally struggle to discover relevant opportunities aligned with their specific skill sets and career interests. The information is fragmented across dozens of platforms, deadlines are missed, and there's no intelligent curation layer.
+Students constantly miss out on high-impact **internships, hackathons, scholarships, certifications, competitions, workshops, and courses** because opportunity information is scattered haphazardly across hundreds of job boards, Telegram channels, Discord servers, and college groups.
 
-**OpportunityAI** solves this by providing a single, beautiful, AI-driven platform that:
-- Matches students to the *right* opportunities based on their actual skills
-- Shows urgency-aware deadline tracking
-- Surfaces hidden gems (open-source programs, scholarships) often missed by students
+Conventional job portals (Unstop, Naukri, Internshala, LinkedIn) force students into passive, tedious manual keyword searches and generic listing dumps with zero contextual relevance.
+
+---
+
+## 💡 The Solution: OPPORTUNEX
+
+**Opportunex** is an original **Personal Opportunity Command Center** that inverts the traditional discovery paradigm:
+Instead of you searching the web, your personalized opportunity feed is calculated dynamically based on:
+- **Education & Year** (1st year eligible vs. pre-final vs. final year)
+- **Technical Skills** (C++, Python, SQL, React, etc.)
+- **Career Interests** (AI, Web Dev, Startups, Competitive Programming)
+- **Work Mode & Location Preferences** (Remote, Hybrid, In-Office across India)
+
+---
+
+## ⚡ Core Differentiator: Explainable Match Engine
+
+Every single recommendation explains **WHY** it matches you with clear, deterministic evidence:
+
+```
+┌────────────────────────────────────────────────────────┐
+│ 95% MATCH — Smart India Hackathon 2026                 │
+│                                                        │
+│ Why this matches you:                                  │
+│  ✓ C++ & Python match your primary skills              │
+│  ✓ AI & Startups match your selected career interests  │
+│  ✓ Open to 1st-Year engineering students               │
+│  ✓ India / Remote competition with national recognition│
+│  ✓ Active deadline within your application radar       │
+└────────────────────────────────────────────────────────┘
+```
+
+### Deterministic Recommendation Scoring Algorithm
+
+```
+Total Match Score (100%) =
+  ├── Skills Match (40%): Overlap between student profile skills & opportunity requirements
+  ├── Interest / Category Match (25%): Alignment with student career tracks (AI, Hackathons, etc.)
+  ├── Education & Year Eligibility (20%): Eligibility verified for current academic semester
+  ├── Location & Work Mode (10%): Remote or city preference match
+  └── Deadline Relevance (5%): Priority score for opportunities closing within 14–30 days
+```
 
 ---
 
 ## ✨ Key Features
 
-| Feature | Description |
-|---|---|
-| 🌐 **3D Interactive Hero Globe** | Three.js particle sphere with cursor-reactive mouse tracking |
-| 🎯 **Smart Match Engine** | Algorithmic scoring: `calculateMatchScore(skills, interests, opportunity)` |
-| 🔍 **Universal Search** | Instant search across title, org, skills, and category |
-| 🏷️ **Filter Hub** | Category chips, interest toggles, and remote-only filter |
-| 📋 **Student Profile** | Create & persist your profile (skills + interests) via localStorage |
-| 🔖 **Saved Drawer** | Slide-in drawer for bookmarked opportunities |
-| 📊 **Dashboard Analytics** | Stat widgets: saved count, deadlines, match count, next deadline |
-| 🎨 **Glassmorphic UI** | Frost & Glow design with ambient gradient orbs and frosted cards |
+1. **Personalized Opportunity Feed**: Dynamic cards calculated in real-time matching the student's exact profile.
+2. **Explainable "Why this matches you" Checklist**: Transparent reasons for every match.
+3. **Application Tracker Pipeline**: Kanban pipeline tracking (*Saved → Planning to Apply → Applied → Shortlisted → Selected → Closed*).
+4. **Dual Model AI Career Copilot**: Slide-over AI dashboard supporting **Google Gemini 2.0** and **xAI Grok-2** for automated resume gap analysis, mock interview prep, and SIH project ideation.
+5. **Universal Search & Multi-Filter Radar**: Real-time filtering across Category, Remote mode, Eligibility, and Technical Skills.
+6. **Student Career Passport Card & Modal**: Verified student credentials, LeetCode ratings (`1850 Knight`), hackathon trophies (`SIH Winner`), and college crest verification.
+7. **Dedicated ATS Resume Uploader**: Drag & drop PDF/Word uploader with ATS parsing check and instant download.
+8. **1:1 Industry Mentorship & Live Events**: Booking sessions with verified engineers at Google, Meta, Microsoft, Flipkart, and Cloudflare.
 
 ---
 
-## 🛠️ Tech Stack
+## 👤 Demo Profile (Pre-Configured for Judges)
 
-```
-Frontend    → Next.js 15 (App Router) + TypeScript
-Styling     → Tailwind CSS v4 + custom glassmorphism utilities
-3D          → Three.js (particle sphere, floating nodes, cursor parallax)
-State       → Zustand + localStorage persistence
-Icons       → Lucide React
-Animation   → Framer Motion
-Dates       → date-fns
-Container   → Docker (multi-stage, node:20-alpine)
-Deploy      → Google Cloud Run / Vercel / Railway
-```
+- **Name**: Yash
+- **College**: Institute of Technology
+- **Degree**: B.Tech Information Technology (1st Year)
+- **Skills**: C++, Python, SQL, HTML, CSS, JavaScript, React, Git
+- **Interests**: AI, Software Development, Hackathons, Startups, Competitive Programming
+- **Preferences**: Remote, India
+- **LeetCode Rating**: 1850 (Knight Rank, Top 2.5%)
+- **Hackathon Achievement**: SIH 2023 National Winner
 
 ---
 
-## 🏗️ Architecture
+## 🛠️ Technology Stack
 
-```
-student-matcher/
-├── app/
-│   ├── layout.tsx          # Root layout with fonts and SEO metadata
-│   ├── page.tsx            # Main page: hero, stats, grid
-│   └── globals.css         # Glassmorphism utilities + design tokens
-├── components/
-│   ├── Navbar.tsx          # Sticky glassmorphic navbar
-│   ├── HeroGlobe.tsx       # Three.js 3D interactive globe
-│   ├── SearchFilterBar.tsx # Universal search + category/interest filters
-│   ├── OpportunityCard.tsx # Card with match score, deadline, bookmark
-│   ├── OpportunityDetailModal.tsx # Full detail modal
-│   ├── ProfileModal.tsx    # Student profile creation/editing
-│   ├── SavedDrawer.tsx     # Slide-in saved opportunities drawer
-│   └── DashboardStats.tsx  # Analytics stat widgets
-├── lib/
-│   ├── opportunities.ts    # Seed data (14 opportunities) + match algorithm
-│   └── store.ts            # Zustand store with localStorage sync
-├── Dockerfile              # Multi-stage Cloud Run optimized
-├── cloudbuild.yaml         # Google Cloud Build CI/CD pipeline
-└── README.md
-```
-
-### Match Score Algorithm
-
-```typescript
-function calculateMatchScore(
-  studentSkills: string[],
-  studentInterests: string[],
-  opportunity: Opportunity
-): number {
-  // Skill match: 60% weight
-  const skillMatches = opportunity.skills.filter(s =>
-    studentSkills.map(x => x.toLowerCase()).includes(s.toLowerCase())
-  ).length;
-  const skillScore = (skillMatches / opportunity.skills.length) * 60;
-
-  // Interest match: 40% weight
-  const interestMatches = opportunity.interests.filter(i =>
-    studentInterests.includes(i)
-  ).length;
-  const interestScore = (interestMatches / opportunity.interests.length) * 40;
-
-  // Featured bonus: +5
-  return Math.min(Math.round(skillScore + interestScore + (featured ? 5 : 0)), 99);
-}
-```
+- **Framework**: Next.js 16 (App Router + Turbopack)
+- **Language**: TypeScript 5.0 (Strict mode)
+- **Styling**: Vanilla CSS + Tailwind CSS v4 design tokens
+- **Icons**: Lucide React + Authentic SVGs (Google, Microsoft, Meta, AWS, SIH, LeetCode)
+- **State Management**: Zustand with persistent storage
+- **Animations**: Framer Motion
+- **Containerization**: Docker (multi-stage alpine build)
+- **Deployment Targets**: Google Cloud Run & Vercel
 
 ---
 
-## ⚡ Local Development Setup
+## 🚀 Quickstart & Local Setup
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-
-### Installation
-
+### 1. Clone the repository
 ```bash
-# Clone or navigate to project
-cd student-matcher
+git clone https://github.com/Yash293-myc/FIT-FEST-2K26.git
+cd FIT-FEST-2K26
+```
 
-# Install dependencies
+### 2. Install dependencies
+```bash
 npm install
+```
 
-# Start development server
+### 3. Run development server
+```bash
 npm run dev
 ```
-
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
----
-
-## 🚀 Free Deployment Options
-
-### Option 1: Vercel (Recommended — Completely Free, No Docker Needed)
-
-The **fastest and simplest** free deployment for Next.js:
-
+### 4. Build for production
 ```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy from project directory
-vercel
-
-# Or link to GitHub and auto-deploy on push
+npm run build
+npm run start
 ```
 
-**Steps:**
-1. Push code to GitHub
-2. Go to [vercel.com](https://vercel.com) → Import Project
-3. Select your GitHub repo → Deploy
-4. Get a live URL instantly (e.g., `your-app.vercel.app`)
-
-✅ **Free tier includes:** 100GB bandwidth, unlimited deployments, custom domain support
-
 ---
 
-### Option 2: Railway (Free Tier — Docker Support)
+## 🐳 Google Cloud Run Deployment
 
+Opportunex includes a production-grade, multi-stage `Dockerfile` configured for Google Cloud Run on port **8080**:
+
+### Step 1: Build the Docker image
 ```bash
-# Install Railway CLI
-npm install -g @railway/cli
-
-# Login and deploy
-railway login
-railway init
-railway up
+docker build -t gcr.io/YOUR_PROJECT_ID/opportunex:latest .
 ```
 
-✅ **Free tier includes:** $5/month credit, automatic Docker build, PostgreSQL DB available
-
----
-
-### Option 3: Google Cloud Run (Free Tier Available)
-
-**Requires:** Google Cloud account (free $300 credit for new users)
-
+### Step 2: Push to Google Artifact Registry / GCR
 ```bash
-# 1. Install Google Cloud SDK
-# https://cloud.google.com/sdk/docs/install
+docker push gcr.io/YOUR_PROJECT_ID/opportunex:latest
+```
 
-# 2. Authenticate
-gcloud auth login
-gcloud config set project YOUR_PROJECT_ID
-
-# 3. Enable required APIs
-gcloud services enable cloudbuild.googleapis.com run.googleapis.com
-
-# 4. Build and push Docker image
-gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/student-opportunity-matcher
-
-# 5. Deploy to Cloud Run
-gcloud run deploy student-opportunity-matcher \
-  --image gcr.io/YOUR_PROJECT_ID/student-opportunity-matcher \
+### Step 3: Deploy to Cloud Run
+```bash
+gcloud run deploy opportunex \
+  --image gcr.io/YOUR_PROJECT_ID/opportunex:latest \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --port 8080 \
-  --memory 512Mi
-
-# 6. Get the live URL
-gcloud run services describe student-opportunity-matcher \
-  --region us-central1 \
-  --format 'value(status.url)'
-```
-
-**Or use the included `cloudbuild.yaml` for automated CI/CD:**
-
-```bash
-# Trigger a build via Cloud Build
-gcloud builds submit --config cloudbuild.yaml
-```
-
-✅ **Cloud Run free tier:** 2 million requests/month, 360,000 GB-seconds compute/month
-
----
-
-### Option 4: Render (Free Tier — Docker)
-
-1. Push code to GitHub
-2. Go to [render.com](https://render.com) → New Web Service
-3. Connect GitHub repo → Select "Docker" environment
-4. Set port to `8080`
-5. Deploy!
-
-✅ **Free tier:** 750 hours/month, auto-deploy on push
-
----
-
-## 🐳 Docker Build (For Cloud Deployment)
-
-```bash
-# Build the production image
-docker build -t student-opportunity-matcher .
-
-# Run locally on port 8080
-docker run -p 8080:8080 student-opportunity-matcher
-
-# Test
-open http://localhost:8080
+  --port 8080
 ```
 
 ---
 
-## 📝 Environment Variables
+## ⚡ 1-Click Vercel Deployment
 
-No environment variables are required for the MVP. All data is client-side with localStorage persistence.
-
-For future production database integration, add:
-
-```env
-DATABASE_URL=postgresql://...
-NEXT_PUBLIC_API_URL=https://your-api.com
-```
+1. Go to [vercel.com/new](https://vercel.com/new).
+2. Import repository: `https://github.com/Yash293-myc/FIT-FEST-2K26.git`.
+3. Framework Preset: **Next.js** (Auto-detected).
+4. Click **Deploy**.
 
 ---
 
-## 🎨 Design System
+## 📄 License & Attribution
 
-### Color Palette
-| Token | Value | Usage |
-|---|---|---|
-| Deep Space | `#040714` | Page background |
-| Glass | `rgba(255,255,255,0.05)` | Card backgrounds |
-| Border | `rgba(255,255,255,0.10)` | Card borders |
-| Indigo | `#6366f1` | Primary accent |
-| Violet | `#a855f7` | Secondary accent |
-| Cyan | `#22d3ee` | Tertiary accent |
-
-### Glassmorphism Classes
-```css
-.glass-panel   /* Main card/panel with backdrop-blur */
-.glass-input   /* Form inputs */
-.glass-chip    /* Tags and filter chips */
-.glass-btn     /* Button variant */
-.opportunity-card /* Interactive opportunity card */
-```
-
----
-
-## 🏆 Hackathon Submission
-
-**Project:** Smart Student Opportunity & Career Matcher  
-**Team:** [Your Team Name]  
-**Category:** EdTech / Career Development  
-**Problem Solved:** Student opportunity discovery and intelligent career matching  
-
----
-
-## 📄 License
-
-MIT License — Free to use, modify, and deploy.
-
----
-
-*Built with ❤️ for students worldwide · Powered by Next.js + Three.js + AI Matching*
+Developed with passion by **Yash** for the **FIT-FEST 2026 HACKATHON**. Distributed under the MIT License.

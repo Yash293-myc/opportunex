@@ -206,44 +206,44 @@ export function calculateProfileStrength(p: StudentProfile | null): number {
 
 export const DEFAULT_STUDENT_PROFILE: StudentProfile = {
   photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  name: 'Rahul Sharma',
-  username: 'rahulsharma',
-  headline: 'Computer Science Student | Full Stack Developer | Hackathon Enthusiast',
-  bio: 'Pre-final year Computer Science undergrad passionate about building scalable full-stack web applications and machine learning solutions. Winner at SIH 2025 and active open source contributor.',
-  location: 'Bengaluru, India',
-  email: 'rahul.sharma@iitb.ac.in',
+  name: 'Yash',
+  username: 'yash293',
+  headline: 'Information Technology Student | C++ & Python Developer | Hackathon Enthusiast',
+  bio: '1st Year IT undergrad passionate about building high-impact software, competitive programming, and AI applications. Active participant in national hackathons and developer communities.',
+  location: 'India',
+  email: 'yashsongire293@gmail.com',
   phone: '+91 98765 43210',
   phonePrivate: true,
 
-  college: 'XYZ Institute of Technology',
-  degree: 'B.Tech CSE',
-  year: '3rd Year',
-  skills: ['React', 'Node.js', 'Python', 'Java', 'SQL', 'AWS', 'MongoDB', 'Git'],
-  interests: ['AI/ML', 'Web Dev', 'Cloud', 'Open Source'],
+  college: 'Institute of Technology',
+  degree: 'B.Tech IT',
+  year: '1st Year',
+  skills: ['C++', 'Python', 'SQL', 'HTML', 'CSS', 'JavaScript'],
+  interests: ['AI', 'Software Development', 'Hackathons', 'Startups', 'Competitive Programming'],
 
   education: [
     {
       id: 'edu-1',
-      college: 'XYZ Institute of Technology',
+      college: 'Institute of Technology',
       degree: 'B.Tech',
-      branch: 'Computer Science & Engineering',
-      year: '3rd Year | 6th Semester',
-      startYear: '2024',
-      gradYear: '2028',
-      cgpa: '8.7',
-      location: 'Bengaluru, Karnataka'
+      branch: 'Information Technology',
+      year: '1st Year',
+      startYear: '2025',
+      gradYear: '2029',
+      cgpa: '8.8',
+      location: 'India'
     }
   ],
 
-  technicalSkills: ['Python', 'React', 'ML', 'SQL', 'TypeScript', 'Node.js', 'AWS', 'Docker', 'MongoDB'],
-  softSkills: ['Problem Solving', 'Leadership', 'Communication', 'Teamwork', 'Event Management'],
+  technicalSkills: ['C++', 'Python', 'SQL', 'HTML', 'CSS', 'JavaScript', 'React', 'Git'],
+  softSkills: ['Problem Solving', 'Leadership', 'Communication', 'Teamwork', 'Agile'],
   skillProficiency: {
+    'C++': 'Advanced',
     'Python': 'Advanced',
-    'React': 'Advanced',
-    'ML': 'Intermediate',
     'SQL': 'Intermediate',
-    'TypeScript': 'Intermediate',
-    'Node.js': 'Advanced'
+    'HTML': 'Advanced',
+    'CSS': 'Advanced',
+    'JavaScript': 'Intermediate'
   },
 
   links: {
@@ -600,7 +600,7 @@ export const useAppStore = create<AppState>()(
       setShowAICopilot: (v) => set({ showAICopilot: v }),
     }),
     {
-      name: 'student-matcher-store-v4',
+      name: 'opportunex-fitfest-v1',
       partialize: (state) => ({
         profile: state.profile,
         savedIds: state.savedIds,

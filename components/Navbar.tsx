@@ -2,6 +2,7 @@
 
 import { Search, Bookmark, ChevronDown, Sun, Moon } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
+import BrandLogo from '@/components/BrandLogo';
 
 export default function Navbar() {
   const { 
@@ -11,12 +12,17 @@ export default function Navbar() {
 
   return (
     <header className="top-navbar">
-      {/* Search Input (Centered / Dominant as in the image) */}
+      {/* ─── 1. BRAND LOGO AT THE TOP LEFT (EXACTLY AS UNSTOP / LINKEDIN) ─── */}
+      <div className="flex-shrink-0 mr-4 sm:mr-8">
+        <BrandLogo textSize="text-xl sm:text-2xl" />
+      </div>
+
+      {/* ─── 2. SEARCH INPUT (CENTERED & PROMINENT) ─── */}
       <div className="nav-search-bar">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
         <input
           type="text"
-          placeholder="Search internships, hackathons, roles..."
+          placeholder="Search internships, hackathons, roles, skills..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           id="search-input"
@@ -31,8 +37,8 @@ export default function Navbar() {
         )}
       </div>
 
-      {/* Right Actions: Theme Switcher, Saved Bookmarks, Profile Button */}
-      <div className="flex items-center gap-2.5 ml-auto flex-shrink-0">
+      {/* ─── 3. RIGHT ACTIONS: THEME SWITCHER, BOOKMARKS, USER PILL ─── */}
+      <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0">
         {/* Theme Toggle (Light / Dark Mode) */}
         <button
           onClick={toggleTheme}
@@ -53,22 +59,22 @@ export default function Navbar() {
           )}
         </button>
 
-        {/* Saved Bookmarks Pill Button */}
+        {/* Saved Bookmarks Button */}
         <button
           onClick={() => setShowSavedDrawer(true)}
           className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-input)] hover:border-[var(--border-strong)] text-[var(--text-main)] text-xs font-semibold transition-all shadow-sm"
           id="saved-btn"
         >
           <Bookmark className={`w-3.5 h-3.5 ${savedIds.length > 0 ? 'text-cyan-500 fill-cyan-500/20' : 'text-[var(--text-muted)]'}`} />
-          <span>Saved Bookmarks</span>
+          <span className="hidden md:inline">Saved Bookmarks</span>
           {savedIds.length > 0 && (
-            <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 text-[10px] font-bold border border-cyan-500/30">
+            <span className="px-1.5 py-0.2 rounded-full bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 text-[10px] font-bold border border-cyan-500/30">
               {savedIds.length}
             </span>
           )}
         </button>
 
-        {/* Rahul Sharma Profile Pill Button */}
+        {/* User Profile Pill Button */}
         <button
           onClick={() => {
             setProfileModalMode('view');
@@ -84,7 +90,7 @@ export default function Navbar() {
               className="w-full h-full object-cover"
             />
           </div>
-          <span className="text-xs font-semibold">{profile?.name || 'Rahul Sharma'}</span>
+          <span className="text-xs font-semibold hidden sm:inline">{profile?.name || 'Rahul Sharma'}</span>
           <ChevronDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
         </button>
       </div>

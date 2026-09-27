@@ -34,7 +34,7 @@ export default function AICopilotModal() {
     {
       id: 'm-init',
       sender: 'ai',
-      text: `Hello ${profile.name.split(' ')[0]}! I'm your TalentOrbit Career Copilot. I've analyzed your academic records at ${profile.college}, your verified skills in Python, React, and ML, and your SIH 2023 victory. How can I help boost your applications today?`,
+      text: `Hello ${profile.name}! I'm your Opportunex Career Copilot. I've analyzed your academic records in ${profile.degree || 'Information Technology'}, your verified skills in C++, Python, SQL, and Web Development. How can I help accelerate your opportunity discovery today?`,
       model: 'Gemini 2.0 Flash',
       timestamp: 'Just now'
     }
@@ -72,24 +72,23 @@ export default function AICopilotModal() {
     setInputMessage('');
     setIsTyping(true);
 
-    // AI Response generation
     setTimeout(() => {
       let aiReply = '';
       const modelName = activeModel === 'grok' 
         ? (grokApiKey ? 'xAI Grok-2' : 'Grok Engine') 
         : activeModel === 'gemini' 
           ? (geminiApiKey ? 'Google Gemini 2.0' : 'Gemini Flash Engine') 
-          : 'TalentOrbit Neural';
+          : 'Opportunex Neural';
 
       const q = query.toLowerCase();
       if (q.includes('resume') || q.includes('google') || q.includes('gsoc')) {
-        aiReply = `📊 **Resume Fit Analysis for Google Summer of Code / Top Tech:**\n\n• **Match Score:** 95% (Top Tier Candidate)\n• **Key Strengths:** Strong full-stack proficiency with React & Node.js, verified Knight rank in LeetCode (1850), and national SIH podium credential.\n• **High-Impact Recommendations:**\n  1. Highlight open-source pull requests on GitHub in the top 3 bullet points.\n  2. Emphasize low-latency API optimization and caching metrics from your AI Chatbot project.\n  3. Mention CI/CD & container deployment (Docker/AWS).\n• **ATS Keyword Status:** Python, React, FastApi, Distributed Systems all verified.`;
+        aiReply = `📊 **Resume Fit Analysis for Google Summer of Code / Top Tech:**\n\n• **Match Score:** 95% (Top Tier Candidate)\n• **Key Strengths:** Strong fundamentals in C++, Python, and full-stack development, with proven competitive programming discipline.\n• **High-Impact Recommendations:**\n  1. Highlight open-source pull requests on GitHub in the top 3 bullet points.\n  2. Emphasize low-latency API optimization and algorithmic complexity in your project descriptions.\n  3. Highlight your 1st-year hackathon initiative.\n• **ATS Keyword Status:** Python, C++, SQL, Algorithms, Git all verified.`;
       } else if (q.includes('sih') || q.includes('project') || q.includes('hackathon')) {
-        aiReply = `🏆 **Top 3 Winning Project Architectures for SIH 2026:**\n\n1. **Decentralized Land & Credential Verification:** Uses blockchain + zero-knowledge proof OCR to eliminate counterfeit university certificates.\n2. **AI Grievance Prioritization Engine:** Uses lightweight NLP embeddings to cluster citizen complaints and auto-route emergency alerts to government bodies.\n3. **Predictive Energy Load Dispatcher:** Leverages time-series ML for institutional grid conservation.\n\n💡 *Pro-tip: Focus your slide deck on clear cost-savings and scalability.*`;
+        aiReply = `🏆 **Top 3 Winning Project Architectures for SIH 2026:**\n\n1. **Decentralized Student Credential Verification:** Uses blockchain + zero-knowledge OCR to eliminate counterfeit certificates.\n2. **AI Grievance Prioritization Engine:** Uses lightweight NLP embeddings to cluster citizen complaints and auto-route alerts.\n3. **Predictive Energy Load Dispatcher:** Leverages time-series ML for institutional grid conservation.\n\n💡 *Pro-tip: Focus your slide deck on clear cost-savings and scalability.*`;
       } else if (q.includes('interview') || q.includes('microsoft')) {
-        aiReply = `🎯 **Microsoft SDE Internship Technical Interview Checklist:**\n\n1. **Data Structures:** "Implement LRU Cache in O(1) time" & "Detect cycle in Directed Graph".\n2. **System Design:** "How would you design a real-time notification service for 500,000 active students?" (Leverage your CampusConnect WebSocket experience).\n3. **Behavioral:** "Describe a high-pressure deadline during SIH 2023 and how your team resolved unexpected architectural bugs."`;
+        aiReply = `🎯 **Microsoft SDE Technical Interview Checklist for ${profile.name}:**\n\n1. **Data Structures:** "Implement LRU Cache in O(1) time" & "Detect cycle in Directed Graph".\n2. **System Design:** "How would you design a real-time notification service for 500,000 active students?"\n3. **Behavioral:** "Describe a high-pressure deadline during a hackathon and how your team resolved unexpected bugs."`;
       } else {
-        aiReply = `✨ Based on your verified credentials (${profile.college}, ${profile.education[0]?.cgpa} CGPA, and ${profile.technicalSkills.length} verified technical skills), you are currently in the **Top 2.5% of candidate matches** for our 14 active openings. I recommend applying to the **Meta AI Research Internship** and **Smart India Hackathon 2026** today!`;
+        aiReply = `✨ Based on your verified credentials (${profile.college}, ${profile.degree}, and ${profile.technicalSkills.length} technical skills), you are in the **Top 2.5% of candidate matches** for our 14 active openings. I recommend applying to the **Meta AI Research Internship** and **Smart India Hackathon 2026** today!`;
       }
 
       setMessages(prev => [
@@ -103,7 +102,7 @@ export default function AICopilotModal() {
         }
       ]);
       setIsTyping(false);
-    }, 850);
+    }, 800);
   };
 
   return (
@@ -115,25 +114,25 @@ export default function AICopilotModal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/75 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
             onClick={() => setShowAICopilot(false)}
           />
 
-          {/* ─── SIDEBAR DRAWER (OPENS FROM THE RIGHT SIDE) ─── */}
+          {/* ─── SIDEBAR DRAWER (PERFECT RHYTHM & ALIGNMENT) ─── */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-            className="fixed top-0 right-0 h-full w-full max-w-xl z-50 bg-[#0b101e] border-l border-slate-700/80 shadow-[0_0_80px_rgba(0,0,0,0.85)] flex flex-col"
-            style={{ backgroundColor: '#0b101e' }}
+            className="fixed top-0 right-0 h-full w-full max-w-xl z-50 bg-[#0a0f1d] border-l border-slate-800 shadow-[0_0_80px_rgba(0,0,0,0.9)] flex flex-col"
+            style={{ backgroundColor: '#0a0f1d' }}
           >
-            {/* Drawer Header */}
-            <div className="p-5 border-b border-slate-800 bg-[#090d19] flex items-center justify-between">
+            {/* 1. Header Bar */}
+            <div className="px-6 py-5 border-b border-slate-800/80 bg-[#080c18] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-600 p-0.5 flex items-center justify-center flex-shrink-0 shadow-lg shadow-cyan-500/25">
-                  <div className="w-full h-full bg-[#080c16] rounded-[14px] flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-cyan-300 animate-pulse" />
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 p-0.5 flex items-center justify-center flex-shrink-0 shadow-lg shadow-cyan-500/20">
+                  <div className="w-full h-full bg-[#060913] rounded-[14px] flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-cyan-300" />
                   </div>
                 </div>
                 <div>
@@ -144,26 +143,26 @@ export default function AICopilotModal() {
                     </span>
                   </h3>
                   <p className="text-xs text-slate-400">
-                    Dual Model Intelligence: Gemini 2.0 & xAI Grok
+                    Dual Model Engine: Gemini 2.0 & xAI Grok
                   </p>
                 </div>
               </div>
 
               <button
                 onClick={() => setShowAICopilot(false)}
-                className="w-9 h-9 rounded-xl border border-slate-700 bg-slate-800/80 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+                className="w-9 h-9 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                 aria-label="Close sidebar"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Model Selector Bar */}
-            <div className="px-5 py-2.5 bg-[#0e1424] border-b border-slate-800 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#090d19] border border-slate-800 text-xs w-full sm:w-auto">
+            {/* 2. Model Selector Bar (Clean, Centered, No Crammed Borders) */}
+            <div className="px-6 py-3 bg-[#080d1a] border-b border-slate-800/80 flex items-center justify-between gap-3 flex-shrink-0">
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950 border border-slate-800 text-xs flex-1">
                 <button
                   onClick={() => setActiveModel('gemini')}
-                  className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
                     activeModel === 'gemini' 
                       ? 'bg-blue-600 text-white shadow-sm' 
                       : 'text-slate-400 hover:text-white'
@@ -175,7 +174,7 @@ export default function AICopilotModal() {
 
                 <button
                   onClick={() => setActiveModel('grok')}
-                  className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
                     activeModel === 'grok' 
                       ? 'bg-purple-600 text-white shadow-sm' 
                       : 'text-slate-400 hover:text-white'
@@ -187,7 +186,7 @@ export default function AICopilotModal() {
 
                 <button
                   onClick={() => setActiveModel('neural')}
-                  className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
                     activeModel === 'neural' 
                       ? 'bg-cyan-600 text-white shadow-sm' 
                       : 'text-slate-400 hover:text-white'
@@ -203,15 +202,15 @@ export default function AICopilotModal() {
                   setShowAICopilot(false);
                   setActiveNav('settings');
                 }}
-                className="hidden sm:flex items-center gap-1 text-[11px] text-cyan-400 hover:underline font-semibold"
+                className="flex items-center gap-1 text-xs text-cyan-400 hover:underline font-bold px-2 py-1 rounded-lg hover:bg-cyan-500/10 transition-colors flex-shrink-0"
               >
-                <Key className="w-3 h-3" />
+                <Key className="w-3.5 h-3.5" />
                 <span>API Keys</span>
               </button>
             </div>
 
-            {/* Chat Messages Stream */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-4" style={{ scrollbarWidth: 'thin' }}>
+            {/* 3. Chat Messages Stream */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4" style={{ scrollbarWidth: 'thin' }}>
               {messages.map(msg => (
                 <div
                   key={msg.id}
@@ -227,8 +226,8 @@ export default function AICopilotModal() {
                     <div
                       className={`p-4 rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-wrap ${
                         msg.sender === 'user'
-                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-tr-sm shadow-md'
-                          : 'bg-[#12192c] text-slate-100 border border-slate-700/80 rounded-tl-sm shadow-md'
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-tr-sm shadow-md'
+                          : 'bg-[#11192e] text-slate-100 border border-slate-700/80 rounded-tl-sm shadow-md font-normal'
                       }`}
                     >
                       {msg.text}
@@ -250,7 +249,7 @@ export default function AICopilotModal() {
                           {copiedId === msg.id ? (
                             <>
                               <Check className="w-3 h-3 text-emerald-400" />
-                              <span className="text-emerald-400">Copied</span>
+                              <span className="text-emerald-400 font-bold">Copied</span>
                             </>
                           ) : (
                             <>
@@ -272,7 +271,7 @@ export default function AICopilotModal() {
               ))}
 
               {isTyping && (
-                <div className="flex items-center gap-2 text-xs text-cyan-400 p-3 bg-[#12192c] border border-slate-800 rounded-2xl w-fit">
+                <div className="flex items-center gap-2 text-xs text-cyan-400 p-3 bg-[#11192e] border border-slate-800 rounded-2xl w-fit">
                   <div className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
                   <span>Synthesizing career strategy with {activeModel.toUpperCase()}...</span>
                 </div>
@@ -281,14 +280,14 @@ export default function AICopilotModal() {
               <div ref={chatBottomRef} />
             </div>
 
-            {/* Quick Prompt Suggestions */}
-            <div className="p-3 bg-[#090d19] border-t border-slate-800/80 overflow-x-auto">
-              <div className="flex gap-2 text-xs whitespace-nowrap">
+            {/* 4. Quick Prompt Suggestions Bar */}
+            <div className="px-6 py-2.5 bg-[#080d1a] border-t border-slate-800/80 flex-shrink-0">
+              <div className="flex gap-2 text-xs overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
                 {quickPrompts.map((p, i) => (
                   <button
                     key={i}
                     onClick={() => handleSendMessage(p)}
-                    className="px-3 py-1.5 rounded-xl bg-[#12192c] hover:bg-[#1a233d] border border-slate-700/80 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex items-center gap-1.5 flex-shrink-0"
+                    className="px-3 py-1.5 rounded-xl bg-[#11192e] hover:bg-[#1a2542] border border-slate-700/80 text-slate-300 hover:text-cyan-300 text-xs font-semibold transition-all flex items-center gap-1.5 flex-shrink-0"
                   >
                     <span>{p}</span>
                     <ChevronRight className="w-3 h-3 text-slate-500" />
@@ -297,8 +296,8 @@ export default function AICopilotModal() {
               </div>
             </div>
 
-            {/* Input Box Bar */}
-            <div className="p-4 border-t border-slate-800 bg-[#0b101e]">
+            {/* 5. Input Box Area */}
+            <div className="px-6 py-4 border-t border-slate-800 bg-[#080c18] flex-shrink-0">
               <form
                 onSubmit={e => {
                   e.preventDefault();
@@ -308,10 +307,10 @@ export default function AICopilotModal() {
               >
                 <input
                   type="text"
-                  placeholder={`Ask ${activeModel === 'grok' ? 'Grok-2' : 'Gemini 2.0'} about resumes, hackathons...`}
+                  placeholder={`Ask ${activeModel === 'grok' ? 'Grok-2' : 'Gemini 2.0'} about hackathons, internships, resume advice...`}
                   value={inputMessage}
                   onChange={e => setInputMessage(e.target.value)}
-                  className="flex-1 bg-[#12192c] border border-slate-700/90 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-400 transition-colors"
+                  className="flex-1 bg-[#11192e] border border-slate-700 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-400 transition-colors"
                 />
                 <button
                   type="submit"

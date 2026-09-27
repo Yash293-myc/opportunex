@@ -187,11 +187,6 @@ export default function HomePage() {
       <div className="app-layout">
         {/* ── LEFT SIDEBAR ── */}
         <aside className="left-sidebar">
-          {/* Unique TalentOrbit Brand Logo */}
-          <div className="mb-6 px-1">
-            <BrandLogo />
-          </div>
-
           {/* Student Career Passport Card (Clean, Unique Profile Badge, No Duplicate Names) */}
           <div 
             className="passport-card"
@@ -236,9 +231,9 @@ export default function HomePage() {
                 <p className="text-[11px] font-semibold text-teal-400 truncate">
                   {profile?.degree || 'B.Tech CSE'} • <span className="font-extrabold">{profile?.education[0]?.cgpa || '8.7'} CGPA</span>
                 </p>
-                <div className="text-[10px] text-[var(--text-muted)] truncate flex items-center gap-1 mt-0.5">
-                  <CollegeCrestLogo className="w-3.5 h-3.5" />
-                  <span>{profile?.college || 'XYZ Institute of Technology'}</span>
+                <div className="text-[10px] text-[var(--text-muted)] truncate flex items-center gap-1.5 mt-0.5">
+                  <GraduationCap className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
+                  <span className="truncate">{profile?.college || 'XYZ Institute of Technology'}</span>
                 </div>
               </div>
             </div>
@@ -247,7 +242,7 @@ export default function HomePage() {
             <div className="space-y-1 mb-3">
               <div className="flex items-center justify-between text-[10px] font-bold">
                 <span className="text-[var(--text-sub)]">Profile Strength</span>
-                <span className="text-teal-400">{strength}%</span>
+                <span className="text-teal-400 font-extrabold">{strength}%</span>
               </div>
               <div className="w-full h-1.5 rounded-full bg-[var(--border-strong)] overflow-hidden">
                 <div
@@ -258,14 +253,14 @@ export default function HomePage() {
             </div>
 
             {/* Mini Verified Credentials Row */}
-            <div className="flex items-center gap-1.5 pt-2 border-t border-[var(--border-subtle)] text-[10px] text-[var(--text-sub)]">
-              <span className="px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold flex items-center gap-1">
-                <SIHOfficialLogo className="w-2.5 h-2.5" /> SIH &apos;23
+            <div className="flex items-center gap-2 pt-2 border-t border-[var(--border-subtle)] text-[10px]">
+              <span className="px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-500 dark:text-amber-300 font-bold flex items-center gap-1">
+                🏆 SIH &apos;23
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-bold flex items-center gap-1">
-                <LeetCodeOfficialLogo className="w-2.5 h-2.5" /> 1850
+              <span className="px-2 py-0.5 rounded-md bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-300 font-bold flex items-center gap-1">
+                &lt;/&gt; 1850
               </span>
-              <span className="ml-auto text-teal-400 hover:underline font-bold">
+              <span className="ml-auto text-teal-600 dark:text-teal-400 hover:underline font-bold">
                 View ↗
               </span>
             </div>
