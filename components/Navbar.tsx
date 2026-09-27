@@ -1,99 +1,93 @@
 'use client';
 
-import { Sparkles, User, Bookmark, Menu, X } from 'lucide-react';
+import { Search, Bookmark, ChevronDown, Sun, Moon } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
-import { useState } from 'react';
 
 export default function Navbar() {
-  const { profile, setShowProfileModal, savedIds, setShowSavedDrawer } = useAppStore();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { 
+    profile, setShowProfileModal, savedIds, setShowSavedDrawer, 
+    searchQuery, setSearchQuery, setProfileModalMode, theme, toggleTheme 
+  } = useAppStore();
 
   return (
-    <nav className="sticky top-0 z-30 glass-panel border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <span className="text-white font-bold text-base hidden sm:block">OpportunityAI</span>
-            <span className="text-white/40 text-[10px] hidden sm:block tracking-widest uppercase">Smart Career Matcher</span>
-          </div>
-        </div>
-
-        {/* Nav links – desktop */}
-        <div className="hidden md:flex items-center gap-1">
-          <a href="#opportunities" className="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">
-            Explore
-          </a>
-          <a href="#dashboard" className="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">
-            Dashboard
-          </a>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-2">
-          {/* Saved bookmark button */}
+    <header className="top-navbar">
+      {/* Search Input (Centered / Dominant as in the image) */}
+      <div className="nav-search-bar">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+        <input
+          type="text"
+          placeholder="Search internships, hackathons, roles..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          id="search-input"
+        />
+        {searchQuery && (
           <button
-            onClick={() => setShowSavedDrawer(true)}
-            className="relative glass-btn px-3 py-2 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-1.5"
-            id="saved-drawer-btn"
-            aria-label="View saved opportunities"
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-main)] text-xs"
           >
-            <Bookmark className="w-4 h-4 text-white/60" />
-            {savedIds.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-500 text-[10px] font-bold text-white flex items-center justify-center">
-                {savedIds.length}
-              </span>
-            )}
-            <span className="text-xs text-white/60 hidden sm:block">Saved</span>
+            ✕
           </button>
-
-          {/* Profile button */}
-          <button
-            onClick={() => setShowProfileModal(true)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 ${
-              profile?.name
-                ? 'bg-indigo-600/30 border border-indigo-500/30 hover:bg-indigo-600/50'
-                : 'glass-btn hover:bg-white/10'
-            }`}
-            id="profile-btn"
-            aria-label="Edit student profile"
-          >
-            <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold ${
-              profile?.name
-                ? 'bg-indigo-500 text-white'
-                : 'bg-white/10 text-white/60'
-            }`}>
-              {profile?.name ? profile.name[0].toUpperCase() : <User className="w-3.5 h-3.5" />}
-            </div>
-            <span className="text-xs text-white/70 hidden sm:block max-w-[80px] truncate">
-              {profile?.name || 'Set Profile'}
-            </span>
-          </button>
-
-          {/* Mobile menu toggle */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden glass-btn p-2 rounded-xl hover:bg-white/10 transition-colors"
-          >
-            {menuOpen ? <X className="w-4 h-4 text-white/60" /> : <Menu className="w-4 h-4 text-white/60" />}
-          </button>
-        </div>
+        )}
       </div>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="md:hidden border-t border-white/5 px-4 py-3 flex flex-col gap-1">
-          <a href="#opportunities" className="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">
-            Explore
-          </a>
-          <a href="#dashboard" className="px-4 py-2 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all">
-            Dashboard
-          </a>
-        </div>
-      )}
-    </nav>
+      {/* Right Actions: Theme Switcher, Saved Bookmarks, Profile Button */}
+      <div className="flex items-center gap-2.5 ml-auto flex-shrink-0">
+        {/* Theme Toggle (Light / Dark Mode) */}
+        <button
+          onClick={toggleTheme}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-input)] hover:border-[var(--border-strong)] text-[var(--text-sub)] hover:text-[var(--text-main)] text-xs font-semibold transition-all shadow-sm"
+          id="theme-toggle-btn"
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+        >
+          {theme === 'dark' ? (
+            <>
+              <Sun className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Light</span>
+            </>
+          ) : (
+            <>
+              <Moon className="w-3.5 h-3.5 text-indigo-500" />
+              <span className="hidden sm:inline">Dark</span>
+            </>
+          )}
+        </button>
+
+        {/* Saved Bookmarks Pill Button */}
+        <button
+          onClick={() => setShowSavedDrawer(true)}
+          className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-input)] hover:border-[var(--border-strong)] text-[var(--text-main)] text-xs font-semibold transition-all shadow-sm"
+          id="saved-btn"
+        >
+          <Bookmark className={`w-3.5 h-3.5 ${savedIds.length > 0 ? 'text-cyan-500 fill-cyan-500/20' : 'text-[var(--text-muted)]'}`} />
+          <span>Saved Bookmarks</span>
+          {savedIds.length > 0 && (
+            <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 text-[10px] font-bold border border-cyan-500/30">
+              {savedIds.length}
+            </span>
+          )}
+        </button>
+
+        {/* Rahul Sharma Profile Pill Button */}
+        <button
+          onClick={() => {
+            setProfileModalMode('view');
+            setShowProfileModal(true);
+          }}
+          className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-input)] hover:border-[var(--border-strong)] text-[var(--text-main)] text-xs font-semibold transition-all shadow-sm"
+          id="profile-btn"
+        >
+          <div className="w-6 h-6 rounded-full overflow-hidden border border-[var(--border-strong)] flex-shrink-0">
+            <img
+              src={profile?.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+              alt={profile?.name || 'User'}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <span className="text-xs font-semibold">{profile?.name || 'Rahul Sharma'}</span>
+          <ChevronDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+        </button>
+      </div>
+    </header>
   );
 }

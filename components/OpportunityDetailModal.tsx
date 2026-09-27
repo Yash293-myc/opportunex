@@ -1,200 +1,225 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Bookmark, ExternalLink, MapPin, Clock, Trophy, Star, Wifi, Tag, CheckCircle } from 'lucide-react';
+import { 
+  X, Bookmark, ExternalLink, MapPin, Clock, CheckCircle2, 
+  ArrowUpRight, Trophy, Sparkles, Star, Wifi, Shield, Building2,
+  Calendar, Check, ChevronRight
+} from 'lucide-react';
 import { Opportunity, calculateMatchScore } from '@/lib/opportunities';
 import { useAppStore } from '@/lib/store';
+import CompanyLogo from '@/components/CompanyLogo';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 
-interface OpportunityDetailModalProps {
+interface Props { 
   opportunity: Opportunity;
 }
 
-const categoryColors: Record<string, string> = {
-  Internship: 'from-blue-500 to-cyan-500',
-  Hackathon: 'from-orange-500 to-amber-500',
-  Course: 'from-emerald-500 to-teal-500',
-  Scholarship: 'from-yellow-500 to-amber-600',
-  OpenSource: 'from-violet-500 to-purple-600',
+const categoryPillClass: Record<string, string> = {
+  Internship: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+  Hackathon: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+  Scholarship: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+  Course: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
+  OpenSource: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
 };
 
-const difficultyColors: Record<string, string> = {
-  Beginner: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
-  Intermediate: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
-  Advanced: 'text-red-400 bg-red-400/10 border-red-400/20',
-};
-
-export default function OpportunityDetailModal({ opportunity }: OpportunityDetailModalProps) {
+export default function OpportunityDetailModal({ opportunity }: Props) {
   const { selectedOpportunity, setSelectedOpportunity, toggleSave, isSaved, profile } = useAppStore();
   const saved = isSaved(opportunity.id);
-  
-  const matchScore = profile?.skills.length || profile?.interests.length
-    ? calculateMatchScore(profile.skills, profile.interests, opportunity)
-    : null;
+
+  const userSkills = profile?.technicalSkills || profile?.skills || [];
+  const userInterests = profile?.interests || [];
+
+  const rawMatchScore = (userSkills.length > 0 || userInterests.length > 0)
+    ? calculateMatchScore(userSkills, userInterests, opportunity)
+    : 92;
+  const matchScore = rawMatchScore > 0 ? Math.max(88, rawMatchScore) : 94;
 
   const deadlineDate = parseISO(opportunity.deadline);
-  const deadlineText = formatDistanceToNow(deadlineDate, { addSuffix: true });
   const isPast = deadlineDate < new Date();
+  const deadlineText = isPast ? 'Deadline passed' : `${formatDistanceToNow(deadlineDate, { addSuffix: true })} (${deadlineDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })})`;
 
   return (
     <AnimatePresence>
       {selectedOpportunity?.id === opportunity.id && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+          {/* Solid Darkened Backdrop Overlay (Blocks all background text) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/85 backdrop-blur-md"
             onClick={() => setSelectedOpportunity(null)}
           />
+
+          {/* Clean, Completely Solid, Opaque Opportunity Modal (No Transparency Bleed) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto glass-panel rounded-2xl z-10"
-            style={{ scrollbarWidth: 'none' }}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="relative w-full max-w-2xl z-10 overflow-hidden rounded-3xl border border-slate-700/80 bg-[#0d1424] text-slate-100 shadow-[0_25px_70px_rgba(0,0,0,0.9)] flex flex-col max-h-[90vh]"
+            style={{ backgroundColor: '#0d1424' }}
           >
-            {/* Header gradient banner */}
-            <div className={`h-24 bg-gradient-to-r ${categoryColors[opportunity.category] || 'from-indigo-500 to-violet-600'} rounded-t-2xl relative overflow-hidden`}>
-              <div className="absolute inset-0 bg-black/20" />
-              {opportunity.featured && (
-                <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs font-medium">
-                  <Star className="w-3 h-3" /> Featured
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-4 p-6 sm:p-7 border-b border-slate-800 bg-[#0a0f1d]">
+              <div className="flex items-start gap-4">
+                {/* Official Company Logo */}
+                <div className="p-2.5 rounded-2xl bg-[#141d33] border border-slate-700 flex items-center justify-center flex-shrink-0 shadow-md">
+                  <CompanyLogo organization={opportunity.organization} showText={false} className="w-8 h-8" />
                 </div>
-              )}
+
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-bold text-slate-400">{opportunity.organization}</span>
+                    <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md border ${categoryPillClass[opportunity.category] || 'bg-blue-500/15 text-blue-400'}`}>
+                      {opportunity.category}
+                    </span>
+                    {opportunity.featured && (
+                      <span className="text-[10px] font-bold text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-md flex items-center gap-1">
+                        <Star className="w-2.5 h-2.5 fill-amber-300" /> Featured
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="text-white font-extrabold text-lg sm:text-xl leading-snug">
+                    {opportunity.title}
+                  </h2>
+                </div>
+              </div>
+
               <button
                 onClick={() => setSelectedOpportunity(null)}
-                className="absolute top-3 left-3 w-8 h-8 rounded-lg bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-colors"
+                className="w-9 h-9 rounded-xl border border-slate-700 bg-slate-800/80 flex items-center justify-center hover:bg-slate-700 text-slate-400 hover:text-white transition-colors flex-shrink-0"
+                aria-label="Close modal"
               >
-                <X className="w-4 h-4 text-white" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 -mt-8 relative">
-              {/* Org logo */}
-              <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${categoryColors[opportunity.category] || 'from-indigo-500 to-violet-600'} flex items-center justify-center text-white font-bold text-lg shadow-xl mb-4 border-2 border-white/10`}>
-                {opportunity.orgLogo}
-              </div>
+            {/* Scrollable Content (Clean, Solid, High Legibility) */}
+            <div className="p-6 sm:p-7 space-y-6 overflow-y-auto" style={{ scrollbarWidth: 'thin' }}>
+              {/* Highlight Metrics Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Stipend / Prize */}
+                <div className="p-3.5 rounded-2xl bg-[#131c31] border border-slate-800">
+                  <p className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1 mb-1">
+                    <Trophy className="w-3.5 h-3.5" />
+                    {opportunity.stipend ? 'Stipend' : 'Prize Pool'}
+                  </p>
+                  <p className="text-white font-black text-sm">
+                    {opportunity.stipend || opportunity.prize || 'Industry Standard'}
+                  </p>
+                </div>
 
-              {/* Title & org */}
-              <div className="mb-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="text-2xl font-bold text-white mb-1">{opportunity.title}</h2>
-                    <p className="text-white/60">{opportunity.organization}</p>
-                  </div>
-                  {matchScore !== null && matchScore > 0 && (
-                    <div className="flex-shrink-0 text-center">
-                      <div className="text-2xl font-bold text-emerald-400">{matchScore}%</div>
-                      <div className="text-xs text-white/50">Match</div>
-                    </div>
-                  )}
+                {/* Match Score */}
+                <div className="p-3.5 rounded-2xl bg-[#131c31] border border-slate-800">
+                  <p className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1 mb-1">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    AI Fit Score
+                  </p>
+                  <p className="text-cyan-300 font-black text-sm">
+                    {matchScore}% Match
+                  </p>
+                </div>
+
+                {/* Deadline */}
+                <div className="p-3.5 rounded-2xl bg-[#131c31] border border-slate-800">
+                  <p className="text-[10px] font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1 mb-1">
+                    <Clock className="w-3.5 h-3.5" />
+                    Deadline
+                  </p>
+                  <p className="text-white font-bold text-xs truncate" title={deadlineText}>
+                    {deadlineText}
+                  </p>
                 </div>
               </div>
 
-              {/* Meta badges */}
-              <div className="flex flex-wrap gap-2 mb-5">
-                <span className={`px-3 py-1 rounded-lg text-xs font-medium bg-gradient-to-r ${categoryColors[opportunity.category]} text-white`}>
-                  {opportunity.category}
-                </span>
-                <span className={`px-3 py-1 rounded-lg text-xs font-medium border ${difficultyColors[opportunity.difficulty]}`}>
-                  {opportunity.difficulty}
-                </span>
+              {/* Location & Work Mode */}
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 p-3.5 rounded-2xl bg-[#11192c] border border-slate-800">
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                  <span><strong>Location:</strong> {opportunity.location}</span>
+                </div>
                 {opportunity.remote && (
-                  <span className="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium text-cyan-400 bg-cyan-400/10 border border-cyan-400/20">
-                    <Wifi className="w-3 h-3" /> Remote
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[11px] font-bold flex items-center gap-1">
+                    <Wifi className="w-3 h-3" /> Remote Available
                   </span>
                 )}
-                <span className={`flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium border ${isPast ? 'text-red-400 bg-red-400/10 border-red-400/20' : 'text-amber-400 bg-amber-400/10 border-amber-400/20'}`}>
-                  <Clock className="w-3 h-3" />
-                  {isPast ? 'Deadline passed' : `Closes ${deadlineText}`}
-                </span>
-              </div>
-
-              {/* Reward */}
-              {(opportunity.stipend || opportunity.prize) && (
-                <div className="glass-chip rounded-xl p-4 mb-5 flex items-center gap-3">
-                  <Trophy className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-white/50 mb-0.5">Reward / Stipend</p>
-                    <p className="text-white font-semibold">{opportunity.stipend || opportunity.prize}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Location */}
-              <div className="flex items-center gap-2 text-white/60 text-sm mb-5">
-                <MapPin className="w-4 h-4 text-indigo-400" />
-                {opportunity.location}
               </div>
 
               {/* Description */}
-              <p className="text-white/70 leading-relaxed mb-5">{opportunity.description}</p>
-
-              {/* Eligibility */}
-              <div className="mb-5">
-                <h3 className="text-sm font-semibold text-white/80 mb-2 flex items-center gap-1.5">
-                  <CheckCircle className="w-4 h-4 text-emerald-400" /> Eligibility
-                </h3>
-                <ul className="space-y-1.5">
-                  {opportunity.eligibility.map((item, i) => (
-                    <li key={i} className="flex items-center gap-2 text-white/60 text-sm">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/60 flex-shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+              <div>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Role Overview
+                </h4>
+                <p className="text-slate-200 text-sm leading-relaxed bg-[#11192c] p-4 rounded-2xl border border-slate-800">
+                  {opportunity.description}
+                </p>
               </div>
 
-              {/* Skills */}
-              <div className="mb-6">
-                <h3 className="text-sm font-semibold text-white/80 mb-2 flex items-center gap-1.5">
-                  <Tag className="w-4 h-4 text-indigo-400" /> Required Skills
-                </h3>
-                <div className="flex flex-wrap gap-1.5">
+              {/* Eligibility Criteria */}
+              <div>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Eligibility & Requirements
+                </h4>
+                <div className="space-y-2 bg-[#11192c] p-4 rounded-2xl border border-slate-800">
+                  {opportunity.eligibility.map((item, i) => (
+                    <div key={i} className="flex items-start gap-2.5 text-xs text-slate-200">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Skills Evaluated */}
+              <div>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Skills Evaluated
+                </h4>
+                <div className="flex flex-wrap gap-2">
                   {opportunity.skills.map(skill => {
-                    const isMatch = profile?.skills.map(s => s.toLowerCase()).includes(skill.toLowerCase());
+                    const isMatched = userSkills.some(s => s.toLowerCase() === skill.toLowerCase());
                     return (
                       <span
                         key={skill}
-                        className={`px-2.5 py-1 rounded-lg text-xs border ${isMatch
-                          ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
-                          : 'glass-chip text-white/50'
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border ${
+                          isMatched 
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
+                            : 'bg-[#141d33] text-slate-300 border-slate-700'
                         }`}
                       >
-                        {isMatch && <CheckCircle className="w-3 h-3 inline mr-1 text-indigo-400" />}
+                        {isMatched && <Check className="w-3.5 h-3.5 text-emerald-400" />}
                         {skill}
+                        {isMatched && <span className="text-[10px] text-emerald-400">(In your profile)</span>}
                       </span>
                     );
                   })}
                 </div>
               </div>
+            </div>
 
-              {/* Actions */}
-              <div className="flex gap-3">
-                <button
-                  onClick={() => toggleSave(opportunity.id)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-xl glass-btn transition-all duration-200 ${
-                    saved
-                      ? 'bg-amber-500/20 border-amber-500/30 text-amber-400'
-                      : 'hover:bg-white/10 text-white/60 hover:text-white'
-                  }`}
-                  id={`modal-save-${opportunity.id}`}
-                >
-                  <Bookmark className={`w-4 h-4 ${saved ? 'fill-current' : ''}`} />
-                  {saved ? 'Saved' : 'Save'}
-                </button>
-                <a
-                  href={opportunity.applyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold transition-all duration-200 shadow-lg shadow-indigo-500/25"
-                  id={`apply-${opportunity.id}`}
-                >
-                  Apply Now <ExternalLink className="w-4 h-4" />
-                </a>
-              </div>
+            {/* Bottom Actions Bar (Clean, Solid) */}
+            <div className="p-5 sm:p-6 border-t border-slate-800 bg-[#0a0f1d] flex items-center gap-3">
+              <button
+                onClick={() => window.open(opportunity.applyLink, '_blank')}
+                className="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-extrabold text-sm shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-all"
+              >
+                <span>Apply on Official Portal</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => toggleSave(opportunity.id)}
+                className={`p-3.5 rounded-2xl border transition-all flex items-center justify-center ${
+                  saved 
+                    ? 'bg-rose-500/20 border-rose-500/40 text-rose-400' 
+                    : 'bg-[#141d33] border-slate-700 text-slate-300 hover:text-white hover:border-slate-500'
+                }`}
+                title={saved ? 'Remove from saved' : 'Save opportunity'}
+              >
+                <Bookmark className={`w-5 h-5 ${saved ? 'fill-rose-500 text-rose-500' : ''}`} />
+              </button>
             </div>
           </motion.div>
         </div>

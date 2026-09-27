@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Bookmark, ExternalLink, MapPin, Clock, Star, Wifi, Trophy } from 'lucide-react';
+import { Bookmark, ExternalLink, MapPin, Clock, ArrowRight } from 'lucide-react';
 import { Opportunity, calculateMatchScore } from '@/lib/opportunities';
 import { useAppStore } from '@/lib/store';
 import { formatDistanceToNow, parseISO } from 'date-fns';
@@ -11,114 +11,91 @@ interface OpportunityCardProps {
   index: number;
 }
 
-const categoryColors: Record<string, string> = {
-  Internship: 'from-blue-500 to-cyan-500',
-  Hackathon: 'from-orange-500 to-amber-500',
-  Course: 'from-emerald-500 to-teal-500',
-  Scholarship: 'from-yellow-500 to-amber-600',
-  OpenSource: 'from-violet-500 to-purple-600',
+// Clean accent color per category — subtle, not loud
+const categoryAccent: Record<string, string> = {
+  Internship:  '#888',
+  Hackathon:   '#888',
+  Course:      '#888',
+  Scholarship: '#888',
+  OpenSource:  '#888',
 };
 
-const categoryBg: Record<string, string> = {
-  Internship: 'bg-blue-500/10 border-blue-500/20 text-blue-300',
-  Hackathon: 'bg-orange-500/10 border-orange-500/20 text-orange-300',
-  Course: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300',
-  Scholarship: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-300',
-  OpenSource: 'bg-violet-500/10 border-violet-500/20 text-violet-300',
+const categoryLabel: Record<string, string> = {
+  Internship:  'Internship',
+  Hackathon:   'Hackathon',
+  Course:      'Course',
+  Scholarship: 'Scholarship',
+  OpenSource:  'Open Source',
 };
 
 export default function OpportunityCard({ opportunity, index }: OpportunityCardProps) {
   const { toggleSave, isSaved, setSelectedOpportunity, profile } = useAppStore();
   const saved = isSaved(opportunity.id);
 
-  const matchScore = profile?.skills.length || profile?.interests.length
-    ? calculateMatchScore(profile.skills, profile.interests, opportunity)
-    : null;
+  const matchScore =
+    profile && (profile.skills.length > 0 || profile.interests.length > 0)
+      ? calculateMatchScore(profile.skills, profile.interests, opportunity)
+      : null;
 
   const deadlineDate = parseISO(opportunity.deadline);
-  const deadlineText = formatDistanceToNow(deadlineDate, { addSuffix: true });
-  const isUrgent = (deadlineDate.getTime() - Date.now()) < 1000 * 60 * 60 * 24 * 14; // 14 days
   const isPast = deadlineDate < new Date();
+  const isUrgent =
+    !isPast &&
+    deadlineDate.getTime() - Date.now() < 1000 * 60 * 60 * 24 * 14;
+  const deadlineText = isPast
+    ? 'Closed'
+    : formatDistanceToNow(deadlineDate, { addSuffix: true });
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.4 }}
-      className="opportunity-card group relative rounded-2xl overflow-hidden cursor-pointer"
+      transition={{ delay: index * 0.04, duration: 0.3 }}
+      className="opp-card group"
       onClick={() => setSelectedOpportunity(opportunity)}
-      whileHover={{ y: -4 }}
       id={`card-${opportunity.id}`}
     >
-      {/* Gradient top border */}
-      <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${categoryColors[opportunity.category]}`} />
-
-      {/* Hover glow */}
-      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${categoryColors[opportunity.category]} rounded-2xl`}
-        style={{ opacity: 0.03 }}
-      />
-
-      <div className="relative p-5">
+      <div className="p-5">
         {/* Top row */}
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start justify-between gap-3 mb-4">
+          {/* Org logo + name */}
           <div className="flex items-center gap-3">
-            {/* Org avatar */}
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${categoryColors[opportunity.category]} flex items-center justify-center text-white font-bold text-sm shadow-lg flex-shrink-0`}>
-              {opportunity.orgLogo}
+            <div className="w-9 h-9 rounded-lg bg-[#1a1a1a] border border-[#222] flex items-center justify-center text-[11px] font-bold text-[#888] flex-shrink-0">
+              {opportunity.orgLogo.slice(0, 2)}
             </div>
             <div>
-              <p className="text-white/50 text-xs mb-0.5">{opportunity.organization}</p>
-              <h3 className="text-white font-semibold text-sm leading-tight line-clamp-2 group-hover:text-indigo-300 transition-colors">
+              <p className="text-[#444] text-xs mb-0.5">{opportunity.organization}</p>
+              <h3 className="text-[#e8e8e8] text-sm font-semibold leading-snug group-hover:text-white transition-colors clamp-2">
                 {opportunity.title}
               </h3>
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-1 flex-shrink-0">
-            {opportunity.featured && (
-              <span className="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-              </span>
-            )}
-            <button
-              onClick={e => { e.stopPropagation(); toggleSave(opportunity.id); }}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
-                saved
-                  ? 'bg-amber-500/20 text-amber-400'
-                  : 'glass-chip text-white/40 hover:text-white/80 hover:bg-white/10'
-              }`}
-              id={`save-${opportunity.id}`}
-              aria-label={saved ? 'Remove bookmark' : 'Bookmark opportunity'}
-            >
-              <Bookmark className={`w-4 h-4 ${saved ? 'fill-current' : ''}`} />
-            </button>
-          </div>
+          {/* Bookmark */}
+          <button
+            onClick={e => { e.stopPropagation(); toggleSave(opportunity.id); }}
+            className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 border transition-all ${
+              saved
+                ? 'border-[#333] bg-[#1a1a1a] text-white'
+                : 'border-[#1a1a1a] text-[#333] hover:text-[#666] hover:border-[#2a2a2a]'
+            }`}
+            id={`save-${opportunity.id}`}
+          >
+            <Bookmark className={`w-3.5 h-3.5 ${saved ? 'fill-white' : ''}`} />
+          </button>
         </div>
 
         {/* Description */}
-        <p className="text-white/50 text-xs leading-relaxed mb-4 line-clamp-2">
+        <p className="text-[#555] text-xs leading-relaxed clamp-2 mb-4">
           {opportunity.description}
         </p>
 
-        {/* Match score + category */}
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className={`px-2.5 py-1 rounded-lg text-xs font-medium border ${categoryBg[opportunity.category]}`}>
-            {opportunity.category}
-          </span>
-          {opportunity.remote && (
-            <span className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs text-cyan-400 bg-cyan-400/10 border border-cyan-400/20">
-              <Wifi className="w-3 h-3" /> Remote
-            </span>
-          )}
+        {/* Tags row */}
+        <div className="flex items-center gap-1.5 flex-wrap mb-4">
+          <span className="pill">{categoryLabel[opportunity.category]}</span>
+          {opportunity.remote && <span className="pill">Remote</span>}
           {matchScore !== null && matchScore > 0 && (
-            <span className={`ml-auto px-2.5 py-1 rounded-lg text-xs font-bold ${
-              matchScore >= 70
-                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                : matchScore >= 40
-                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                : 'bg-white/5 text-white/40 border border-white/10'
-            }`}>
+            <span className={`pill ml-auto ${matchScore >= 60 ? '!text-white !border-[#333] !bg-[#1a1a1a]' : ''}`}>
               {matchScore}% match
             </span>
           )}
@@ -126,30 +103,35 @@ export default function OpportunityCard({ opportunity, index }: OpportunityCardP
 
         {/* Reward */}
         {(opportunity.stipend || opportunity.prize) && (
-          <div className="flex items-center gap-1.5 mb-3 text-xs text-amber-400">
-            <Trophy className="w-3 h-3" />
-            <span className="truncate">{opportunity.stipend || opportunity.prize}</span>
-          </div>
+          <p className="text-[#777] text-xs mb-3 truncate">
+            {opportunity.stipend || opportunity.prize}
+          </p>
         )}
 
         {/* Bottom row */}
-        <div className="flex items-center justify-between pt-3 border-t border-white/5">
+        <hr className="divider mb-3" />
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1 text-xs text-white/40">
+            <span className="flex items-center gap-1 text-[#444] text-xs">
               <MapPin className="w-3 h-3" />
-              <span className="truncate max-w-[100px]">{opportunity.remote ? 'Remote' : opportunity.location}</span>
+              <span className="truncate max-w-[90px]">
+                {opportunity.remote ? 'Remote' : opportunity.location.split(',')[0]}
+              </span>
             </span>
-            <span className={`flex items-center gap-1 text-xs ${isPast ? 'text-red-400' : isUrgent ? 'text-orange-400' : 'text-white/40'}`}>
+            <span className={`flex items-center gap-1 text-xs ${
+              isPast ? 'text-[#555]' : isUrgent ? 'text-[#aaa]' : 'text-[#444]'
+            }`}>
               <Clock className="w-3 h-3" />
-              {isPast ? 'Closed' : deadlineText}
+              {deadlineText}
             </span>
           </div>
+
           <button
             onClick={e => { e.stopPropagation(); window.open(opportunity.applyLink, '_blank'); }}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg glass-btn text-xs text-white/60 hover:text-white hover:bg-indigo-500/20 transition-all duration-200"
-            id={`quick-apply-${opportunity.id}`}
+            className="flex items-center gap-1 text-[11px] text-[#555] hover:text-[#999] transition-colors"
+            id={`apply-${opportunity.id}`}
           >
-            Apply <ExternalLink className="w-3 h-3" />
+            Apply <ArrowRight className="w-3 h-3" />
           </button>
         </div>
       </div>

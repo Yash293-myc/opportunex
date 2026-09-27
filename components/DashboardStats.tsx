@@ -2,95 +2,102 @@
 
 import { useAppStore } from '@/lib/store';
 import { opportunities, calculateMatchScore } from '@/lib/opportunities';
-import { Bookmark, Clock, Zap, TrendingUp, Target } from 'lucide-react';
+import { Bookmark, Clock, Target, TrendingUp, Sparkles } from 'lucide-react';
 import { parseISO } from 'date-fns';
 
 export default function DashboardStats() {
-  const { savedIds, profile } = useAppStore();
-
+  const { savedIds, profile, setShowSavedDrawer } = useAppStore();
   const now = new Date();
-  
-  // Count upcoming deadlines (within next 30 days)
+
   const upcomingDeadlines = opportunities.filter(o => {
-    const deadline = parseISO(o.deadline);
-    const diff = deadline.getTime() - now.getTime();
+    const d = parseISO(o.deadline);
+    const diff = d.getTime() - now.getTime();
     return diff > 0 && diff < 1000 * 60 * 60 * 24 * 30;
   }).length;
 
-  // Count recommended (match score >= 50)
-  const recommendedCount = profile
-    ? opportunities.filter(o =>
-        calculateMatchScore(profile.skills, profile.interests, o) >= 50
-      ).length
-    : 0;
+  const userSkills = profile?.technicalSkills || profile?.skills || [];
+  const userInterests = profile?.interests || [];
 
-  // Next deadline
+  const recommendedCount = (userSkills.length > 0 || userInterests.length > 0)
+    ? opportunities.filter(o =>
+        calculateMatchScore(userSkills, userInterests, o) >= 50
+      ).length
+    : null;
+
   const nextDeadline = opportunities
     .filter(o => parseISO(o.deadline) > now)
     .sort((a, b) => parseISO(a.deadline).getTime() - parseISO(b.deadline).getTime())[0];
 
-  const daysToNextDeadline = nextDeadline
+  const daysToNext = nextDeadline
     ? Math.ceil((parseISO(nextDeadline.deadline).getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
     : null;
 
   const stats = [
     {
       icon: Bookmark,
-      label: 'Saved',
       value: savedIds.length,
-      sub: 'opportunities bookmarked',
-      color: 'text-amber-400',
-      bgColor: 'bg-amber-400/10',
-      borderColor: 'border-amber-400/20',
+      label: 'Saved Items',
+      sub: 'Bookmarked for later',
+      colorClass: 'stat-card-rose',
+      iconBg: 'bg-rose-500/15 text-rose-400 border border-rose-500/30',
+      valColor: 'text-rose-400',
+      onClick: () => setShowSavedDrawer(true),
     },
     {
       icon: Clock,
-      label: 'Deadlines',
       value: upcomingDeadlines,
-      sub: 'closing within 30 days',
-      color: 'text-orange-400',
-      bgColor: 'bg-orange-400/10',
-      borderColor: 'border-orange-400/20',
+      label: 'Active Deadlines',
+      sub: 'Expiring in 30 days',
+      colorClass: 'stat-card-amber',
+      iconBg: 'bg-amber-500/15 text-amber-400 border border-amber-500/30',
+      valColor: 'text-amber-400',
     },
     {
       icon: Target,
-      label: 'Matches',
-      value: recommendedCount,
-      sub: profile ? 'for your profile' : 'set profile to see',
-      color: 'text-emerald-400',
-      bgColor: 'bg-emerald-400/10',
-      borderColor: 'border-emerald-400/20',
+      value: recommendedCount !== null ? `${recommendedCount}` : '—',
+      label: 'Matched For You',
+      sub: profile ? `${profile.skills?.length || 0} skills evaluated` : 'Setup profile',
+      colorClass: 'stat-card-emerald',
+      iconBg: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30',
+      valColor: 'text-emerald-400',
     },
     {
       icon: TrendingUp,
+      value: daysToNext !== null ? `${daysToNext}d` : '—',
       label: 'Next Deadline',
-      value: daysToNextDeadline !== null ? `${daysToNextDeadline}d` : '—',
-      sub: nextDeadline ? nextDeadline.title.slice(0, 20) + '…' : 'no upcoming',
-      color: 'text-indigo-400',
-      bgColor: 'bg-indigo-400/10',
-      borderColor: 'border-indigo-400/20',
+      sub: nextDeadline?.organization ?? 'No upcoming',
+      colorClass: 'stat-card-cyan',
+      iconBg: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30',
+      valColor: 'text-cyan-400',
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-      {stats.map((stat) => {
-        const Icon = stat.icon;
+    <>
+      {stats.map(s => {
+        const Icon = s.icon;
         return (
           <div
-            key={stat.label}
-            className={`glass-panel rounded-2xl p-4 border ${stat.borderColor} hover:scale-105 transition-transform duration-200`}
-            id={`stat-${stat.label.toLowerCase().replace(' ', '-')}`}
+            key={s.label}
+            className={`stat-card ${s.colorClass} cursor-pointer group`}
+            onClick={s.onClick}
+            id={`stat-${s.label.toLowerCase().replace(/\s+/g, '-')}`}
           >
-            <div className={`w-9 h-9 rounded-xl ${stat.bgColor} flex items-center justify-center mb-3`}>
-              <Icon className={`w-4 h-4 ${stat.color}`} />
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-xs font-semibold text-slate-400">{s.label}</span>
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${s.iconBg} transition-transform group-hover:scale-110`}>
+                <Icon className="w-3.5 h-3.5" />
+              </div>
             </div>
-            <div className={`text-2xl font-bold ${stat.color} mb-0.5`}>{stat.value}</div>
-            <div className="text-white/70 text-xs font-medium">{stat.label}</div>
-            <div className="text-white/35 text-xs mt-0.5 truncate">{stat.sub}</div>
+            <div className={`text-2xl font-extrabold ${s.valColor} tracking-tight mb-1`}>
+              {s.value}
+            </div>
+            <div className="text-xs text-slate-500 truncate group-hover:text-slate-400 transition-colors">
+              {s.sub}
+            </div>
           </div>
         );
       })}
-    </div>
+    </>
   );
 }

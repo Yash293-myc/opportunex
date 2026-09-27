@@ -1,28 +1,19 @@
 'use client';
 
-import { Search, Filter, SlidersHorizontal, Wifi } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { Category, Interest } from '@/lib/opportunities';
 
-const CATEGORIES: Category[] = ['All', 'Internship', 'Hackathon', 'Course', 'Scholarship', 'OpenSource'];
+const CATEGORIES: { label: string; value: Category; icon: string }[] = [
+  { label: 'All', value: 'All', icon: '·' },
+  { label: 'Internships', value: 'Internship', icon: '' },
+  { label: 'Hackathons', value: 'Hackathon', icon: '' },
+  { label: 'Courses', value: 'Course', icon: '' },
+  { label: 'Scholarships', value: 'Scholarship', icon: '' },
+  { label: 'Open Source', value: 'OpenSource', icon: '' },
+];
+
 const INTERESTS: Interest[] = ['AI/ML', 'Web Dev', 'Cloud', 'Open Source', 'UI/UX'];
-
-const categoryIcons: Record<string, string> = {
-  All: '✦',
-  Internship: '💼',
-  Hackathon: '⚡',
-  Course: '📚',
-  Scholarship: '🏆',
-  OpenSource: '🌐',
-};
-
-const interestColors: Record<Interest, string> = {
-  'AI/ML': 'from-violet-500 to-purple-600',
-  'Web Dev': 'from-blue-500 to-cyan-500',
-  'Cloud': 'from-sky-500 to-blue-600',
-  'Open Source': 'from-emerald-500 to-teal-600',
-  'UI/UX': 'from-pink-500 to-rose-600',
-};
 
 export default function SearchFilterBar() {
   const {
@@ -33,81 +24,62 @@ export default function SearchFilterBar() {
   } = useAppStore();
 
   return (
-    <div className="space-y-4">
-      {/* Search bar */}
-      <div className="relative group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-indigo-400 transition-colors z-10" />
+    <div className="space-y-3">
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#444]" />
         <input
           type="text"
-          placeholder="Search internships, hackathons, scholarships..."
+          placeholder="Search opportunities, skills, organisations..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          className="w-full glass-input rounded-2xl pl-12 pr-4 py-4 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm"
+          className="search-bar pl-10 pr-4 py-2.5 text-sm"
           id="search-input"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80 transition-colors text-sm"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#444] hover:text-[#888] text-xs transition-colors"
           >
             ✕
           </button>
         )}
       </div>
 
-      {/* Category chips */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-        <Filter className="w-4 h-4 text-white/40 flex-shrink-0" />
-        <div className="flex gap-2">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex-shrink-0 ${
-                activeCategory === cat
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
-                  : 'glass-chip text-white/60 hover:text-white hover:bg-white/10'
-              }`}
-              id={`category-${cat.toLowerCase()}`}
-            >
-              <span>{categoryIcons[cat]}</span>
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Category + Interest + Remote row */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-0.5" style={{ scrollbarWidth: 'none' }}>
+        {CATEGORIES.map(cat => (
+          <button
+            key={cat.value}
+            onClick={() => setActiveCategory(cat.value)}
+            className={`filter-chip flex-shrink-0 ${activeCategory === cat.value ? 'active' : ''}`}
+            id={`cat-${cat.value.toLowerCase()}`}
+          >
+            {cat.label}
+          </button>
+        ))}
 
-      {/* Interest filters + remote toggle */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <SlidersHorizontal className="w-4 h-4 text-white/40 flex-shrink-0" />
-        <div className="flex gap-2 flex-wrap">
-          {INTERESTS.map(interest => (
-            <button
-              key={interest}
-              onClick={() => toggleInterest(interest)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 ${
-                activeInterests.includes(interest)
-                  ? `bg-gradient-to-r ${interestColors[interest]} text-white shadow-md`
-                  : 'glass-chip text-white/50 hover:text-white/80'
-              }`}
-              id={`interest-filter-${interest.replace('/', '-')}`}
-            >
-              {interest}
-            </button>
-          ))}
-        </div>
+        <div className="w-px h-4 bg-[#1f1f1f] flex-shrink-0 mx-1" />
+
+        {INTERESTS.map(i => (
+          <button
+            key={i}
+            onClick={() => toggleInterest(i)}
+            className={`filter-chip flex-shrink-0 ${activeInterests.includes(i) ? 'active' : ''}`}
+            id={`int-${i.replace('/', '-')}`}
+          >
+            {i}
+          </button>
+        ))}
+
+        <div className="w-px h-4 bg-[#1f1f1f] flex-shrink-0 mx-1" />
 
         <button
           onClick={toggleRemoteOnly}
-          className={`flex items-center gap-1.5 ml-auto px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 ${
-            showRemoteOnly
-              ? 'bg-cyan-500/20 border border-cyan-500/30 text-cyan-400'
-              : 'glass-chip text-white/50 hover:text-white/80'
-          }`}
+          className={`filter-chip flex-shrink-0 ${showRemoteOnly ? 'active' : ''}`}
           id="remote-filter"
         >
-          <Wifi className="w-3 h-3" />
-          Remote Only
+          Remote
         </button>
       </div>
     </div>
