@@ -2,221 +2,270 @@
 
 import { useState } from 'react';
 import { 
-  Key, Eye, EyeOff, CheckCircle2, ShieldCheck, Sparkles, 
-  Cpu, Bell, Sliders, Save, RefreshCw
+  Bell, Sliders, ShieldCheck, Sparkles, 
+  Cpu, Moon, Sun, CheckCircle2, User, 
+  MapPin, Laptop, Zap, Check, Eye
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 
 export default function SettingsView() {
   const { 
-    geminiApiKey, setGeminiApiKey, 
-    grokApiKey, setGrokApiKey,
-    theme, toggleTheme, setShowAICopilot
+    profile, theme, toggleTheme, setTheme, setShowAICopilot
   } = useAppStore();
 
-  const [geminiKeyInput, setGeminiKeyInput] = useState(geminiApiKey);
-  const [grokKeyInput, setGrokKeyInput] = useState(grokApiKey);
-  const [showGemini, setShowGemini] = useState(false);
-  const [showGrok, setShowGrok] = useState(false);
+  const [notifications, setNotifications] = useState({
+    deadlineRadar: true,
+    matchingAlerts: true,
+    weeklyDigest: false,
+    mentorshipReminders: true
+  });
+
+  const [preferences, setPreferences] = useState({
+    remoteOnly: true,
+    autoMatchGSoC: true,
+    allowRecruiters: true
+  });
+
   const [savedSuccess, setSavedSuccess] = useState(false);
-  const [testingGemini, setTestingGemini] = useState(false);
-  const [testingGrok, setTestingGrok] = useState(false);
-  const [geminiStatus, setGeminiStatus] = useState<string | null>(null);
-  const [grokStatus, setGrokStatus] = useState<string | null>(null);
 
-  const handleSaveKeys = () => {
-    setGeminiApiKey(geminiKeyInput.trim());
-    setGrokApiKey(grokKeyInput.trim());
+  const handleSave = () => {
     setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 3000);
-  };
-
-  const testGeminiConnection = () => {
-    setTestingGemini(true);
-    setTimeout(() => {
-      setTestingGemini(false);
-      setGeminiStatus(geminiKeyInput.trim() ? '✓ Gemini 2.0 Connected & Ready' : 'Ready (Using built-in intelligence engine)');
-    }, 1200);
-  };
-
-  const testGrokConnection = () => {
-    setTestingGrok(true);
-    setTimeout(() => {
-      setTestingGrok(false);
-      setGrokStatus(grokKeyInput.trim() ? '✓ Grok-2 Connected & Ready' : 'Ready (Using built-in intelligence engine)');
-    }, 1200);
+    setTimeout(() => setSavedSuccess(false), 2500);
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      {/* Header Banner */}
-      <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/40 p-6 backdrop-blur-xl relative overflow-hidden">
-        <div className="space-y-1.5">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded-full border border-cyan-500/20 inline-block">
-            Platform Configuration
+    <div className="space-y-8 max-w-4xl pb-12">
+      {/* ─── 1. TOP HEADER BANNER (SPACIOUS & ELEGANT) ─── */}
+      <div className="rounded-3xl bg-gradient-to-r from-indigo-700 via-blue-600 to-cyan-500 p-8 sm:p-10 text-white shadow-xl shadow-blue-900/20 relative overflow-hidden">
+        <div className="max-w-2xl space-y-3 relative z-10">
+          <span className="text-xs font-black uppercase tracking-widest text-cyan-200 bg-white/15 px-3.5 py-1 rounded-full border border-white/20 inline-flex items-center gap-2">
+            <Sliders className="w-3.5 h-3.5 text-cyan-300" />
+            Preferences & Control Center
           </span>
-          <h2 className="text-xl font-extrabold text-white tracking-tight">
-            Settings & AI Model Integrations
-          </h2>
-          <p className="text-xs text-slate-300 leading-relaxed">
-            Configure your Gemini and Grok API keys to empower OpportunityAI&apos;s intelligent resume analysis, automated application scoring, and personalized hackathon advice.
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            Account Settings & Opportunity Radar
+          </h1>
+          <p className="text-sm text-blue-100 leading-relaxed font-medium">
+            Customize your personalized discovery feed, notification triggers, and live AI Copilot preferences for the FIT-FEST 2026 hackathon.
           </p>
         </div>
       </div>
 
-      {/* AI API KEYS CONFIGURATION (AS REQUESTED BY USER) */}
-      <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 space-y-6 shadow-xl">
-        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-cyan-500/20">
-              <Cpu className="w-5 h-5" />
+      {/* ─── 2. STUDENT IDENTITY CARD ─── */}
+      <div className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-7 sm:p-8 shadow-md">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 border-b border-[var(--border-subtle)] pb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-teal-400 shadow-md shadow-teal-500/20 flex-shrink-0">
+              <img
+                src={profile?.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
+                alt={profile?.name || 'Yash'}
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
-              <h3 className="text-white text-sm font-bold">AI Copilot API Keys</h3>
-              <p className="text-xs text-slate-400">Add your Gemini API Key & Grok API Key for direct LLM inference</p>
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-lg sm:text-xl font-black text-[var(--text-main)]">{profile.name}</h2>
+                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Verified Student
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-semibold text-teal-600 dark:text-teal-400 mt-0.5">
+                {profile.degree} • 1st Year (Information Technology)
+              </p>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">{profile.email} • {profile.location}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-bold text-[var(--text-muted)]">Profile Strength:</span>
+            <span className="text-base font-black text-teal-600 dark:text-teal-400 bg-teal-500/10 border border-teal-500/30 px-3 py-1 rounded-xl">
+              100%
+            </span>
+          </div>
+        </div>
+
+        {/* ─── 3. AI COPILOT STATUS (CLEAN VISUAL STATUS — NO RAW API KEYS) ─── */}
+        <div className="mt-6 p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-cyan-500/10 border border-purple-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-purple-500/30 flex-shrink-0">
+              <Zap className="w-6 h-6 text-amber-300" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
+                <span>Groq High-Speed AI Cloud Engine</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 dark:text-emerald-300 border border-emerald-500/40 font-black">
+                  CONNECTED & ACTIVE
+                </span>
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                Model: Llama-3.3 70B Versatile • Latency: ~240ms • Sub-second resume fit analysis
+              </p>
             </div>
           </div>
 
           <button
             onClick={() => setShowAICopilot(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 text-xs font-bold hover:bg-cyan-500/25 transition-all"
+            className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all shadow-md flex items-center gap-2 self-start sm:self-auto"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Open AI Dashboard</span>
-          </button>
-        </div>
-
-        {/* 1. Google Gemini API Key Input */}
-        <div className="space-y-2 p-4 rounded-xl bg-[var(--pill-bg)] border border-[var(--border-subtle)]">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-white flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-400" />
-              Google Gemini API Key
-            </label>
-            <span className="text-[11px] text-slate-400 font-mono">gemini-2.0-flash / 1.5-pro</span>
-          </div>
-
-          <div className="relative">
-            <input
-              type={showGemini ? 'text' : 'password'}
-              className="clean-input pr-20 font-mono text-xs"
-              placeholder="Paste your Google Gemini API key (AIzaSy...)"
-              value={geminiKeyInput}
-              onChange={e => setGeminiKeyInput(e.target.value)}
-            />
-            <button
-              onClick={() => setShowGemini(!showGemini)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-            >
-              {showGemini ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between pt-1 text-xs">
-            <span className="text-emerald-400 text-[11px] font-medium">
-              {geminiStatus || (geminiApiKey ? '✓ Key stored securely in browser' : 'No custom key added (using built-in matching engine)')}
-            </span>
-            <button
-              onClick={testGeminiConnection}
-              className="text-cyan-400 hover:underline font-semibold flex items-center gap-1"
-            >
-              {testingGemini && <RefreshCw className="w-3 h-3 animate-spin" />}
-              <span>Test Gemini API</span>
-            </button>
-          </div>
-        </div>
-
-        {/* 2. xAI Grok API Key Input */}
-        <div className="space-y-2 p-4 rounded-xl bg-[var(--pill-bg)] border border-[var(--border-subtle)]">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-white flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-400" />
-              xAI Grok API Key
-            </label>
-            <span className="text-[11px] text-slate-400 font-mono">grok-2 / grok-beta</span>
-          </div>
-
-          <div className="relative">
-            <input
-              type={showGrok ? 'text' : 'password'}
-              className="clean-input pr-20 font-mono text-xs"
-              placeholder="Paste your xAI Grok API key (xai-...)"
-              value={grokKeyInput}
-              onChange={e => setGrokKeyInput(e.target.value)}
-            />
-            <button
-              onClick={() => setShowGrok(!showGrok)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-            >
-              {showGrok ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between pt-1 text-xs">
-            <span className="text-emerald-400 text-[11px] font-medium">
-              {grokStatus || (grokApiKey ? '✓ Key stored securely in browser' : 'No custom key added (ready to enter)')}
-            </span>
-            <button
-              onClick={testGrokConnection}
-              className="text-cyan-400 hover:underline font-semibold flex items-center gap-1"
-            >
-              {testingGrok && <RefreshCw className="w-3 h-3 animate-spin" />}
-              <span>Test Grok API</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Save button */}
-        <div className="flex items-center justify-between pt-3">
-          {savedSuccess ? (
-            <p className="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4" /> API keys saved and activated!
-            </p>
-          ) : (
-            <p className="text-xs text-slate-400">Keys are kept local in your browser and used only for AI analysis.</p>
-          )}
-
-          <button
-            onClick={handleSaveKeys}
-            className="btn-cyan-download !py-2.5 !px-5 !text-xs"
-          >
-            <Save className="w-3.5 h-3.5" />
-            <span>Save API Keys</span>
+            <span>Launch AI Copilot</span>
           </button>
         </div>
       </div>
 
-      {/* Profile & Notification Preferences */}
-      <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 space-y-4 shadow-xl">
-        <h3 className="text-white text-sm font-bold border-b border-[var(--border-subtle)] pb-3">
-          Notification & Application Settings
-        </h3>
+      {/* ─── 4. RADAR & NOTIFICATION TRIGGERS (SPACIOUS TOGGLES) ─── */}
+      <div className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-7 sm:p-8 space-y-6 shadow-md">
+        <div className="border-b border-[var(--border-subtle)] pb-4">
+          <h2 className="text-base sm:text-lg font-black text-[var(--text-main)] flex items-center gap-2.5">
+            <Bell className="w-5 h-5 text-indigo-500" />
+            Opportunity Radar & Notifications
+          </h2>
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Choose when and how Opportunex notifies you about impending hackathons and job deadlines.
+          </p>
+        </div>
 
-        <div className="space-y-3 text-xs">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--pill-bg)]">
-            <div>
-              <p className="font-semibold text-white">Upcoming Deadline Alerts</p>
-              <p className="text-slate-400 text-[11px]">Notify me 7 days before saved hackathons or internships expire</p>
+        <div className="space-y-4">
+          {/* Toggle 1 */}
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--pill-bg)] border border-[var(--border-subtle)]">
+            <div className="space-y-0.5 max-w-lg">
+              <p className="text-sm font-bold text-[var(--text-main)]">Hackathon Deadline Radar</p>
+              <p className="text-xs text-[var(--text-muted)]">
+                Sends an urgent alert 48 hours before registration closes for your bookmarked competitions.
+              </p>
             </div>
-            <input type="checkbox" defaultChecked className="w-4 h-4 accent-cyan-500 rounded" />
+            <button
+              onClick={() => setNotifications({ ...notifications, deadlineRadar: !notifications.deadlineRadar })}
+              className={`w-12 h-6.5 rounded-full transition-colors relative p-1 flex-shrink-0 ${
+                notifications.deadlineRadar ? 'bg-blue-600' : 'bg-slate-700'
+              }`}
+            >
+              <div
+                className={`w-4.5 h-4.5 rounded-full bg-white transition-transform ${
+                  notifications.deadlineRadar ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--pill-bg)]">
-            <div>
-              <p className="font-semibold text-white">High Match Score Alerts (&gt;90%)</p>
-              <p className="text-slate-400 text-[11px]">Instant notifications when opportunities matching your exact skills are posted</p>
+          {/* Toggle 2 */}
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--pill-bg)] border border-[var(--border-subtle)]">
+            <div className="space-y-0.5 max-w-lg">
+              <p className="text-sm font-bold text-[var(--text-main)]">C++ & Python Match Radar</p>
+              <p className="text-xs text-[var(--text-muted)]">
+                Instant notification when new opportunities match 90%+ of your primary skills and 1st-year status.
+              </p>
             </div>
-            <input type="checkbox" defaultChecked className="w-4 h-4 accent-cyan-500 rounded" />
+            <button
+              onClick={() => setNotifications({ ...notifications, matchingAlerts: !notifications.matchingAlerts })}
+              className={`w-12 h-6.5 rounded-full transition-colors relative p-1 flex-shrink-0 ${
+                notifications.matchingAlerts ? 'bg-blue-600' : 'bg-slate-700'
+              }`}
+            >
+              <div
+                className={`w-4.5 h-4.5 rounded-full bg-white transition-transform ${
+                  notifications.matchingAlerts ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--pill-bg)]">
-            <div>
-              <p className="font-semibold text-white">Resume Visibility for Verified Recruiters</p>
-              <p className="text-slate-400 text-[11px]">Allow Google, Microsoft, and partner hackathon sponsors to view your verified passport</p>
+          {/* Toggle 3 */}
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--pill-bg)] border border-[var(--border-subtle)]">
+            <div className="space-y-0.5 max-w-lg">
+              <p className="text-sm font-bold text-[var(--text-main)]">1:1 Mentorship Session Alerts</p>
+              <p className="text-xs text-[var(--text-muted)]">
+                Notify when Google, Meta, or Microsoft engineers open new slots this week.
+              </p>
             </div>
-            <input type="checkbox" defaultChecked className="w-4 h-4 accent-cyan-500 rounded" />
+            <button
+              onClick={() => setNotifications({ ...notifications, mentorshipReminders: !notifications.mentorshipReminders })}
+              className={`w-12 h-6.5 rounded-full transition-colors relative p-1 flex-shrink-0 ${
+                notifications.mentorshipReminders ? 'bg-blue-600' : 'bg-slate-700'
+              }`}
+            >
+              <div
+                className={`w-4.5 h-4.5 rounded-full bg-white transition-transform ${
+                  notifications.mentorshipReminders ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
           </div>
         </div>
+      </div>
+
+      {/* ─── 5. THEME & DISPLAY PREFERENCES ─── */}
+      <div className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-7 sm:p-8 space-y-6 shadow-md">
+        <div className="border-b border-[var(--border-subtle)] pb-4">
+          <h2 className="text-base sm:text-lg font-black text-[var(--text-main)] flex items-center gap-2.5">
+            <Moon className="w-5 h-5 text-cyan-400" />
+            Display & Appearance
+          </h2>
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Choose your preferred interface theme and aesthetic presentation.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Dark Mode Card */}
+          <div
+            onClick={() => setTheme('dark')}
+            className={`p-5 rounded-2xl border cursor-pointer transition-all flex items-center gap-4 ${
+              theme === 'dark'
+                ? 'border-blue-500 bg-blue-500/10 shadow-md'
+                : 'border-[var(--border-subtle)] bg-[var(--pill-bg)] hover:border-slate-500'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-cyan-400 flex-shrink-0">
+              <Moon className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[var(--text-main)]">Dark Mode (Recommended)</p>
+              <p className="text-xs text-[var(--text-muted)]">High-contrast cybernetic palette with ambient glow</p>
+            </div>
+            {theme === 'dark' && <Check className="w-5 h-5 text-blue-500 ml-auto" />}
+          </div>
+
+          {/* Light Mode Card */}
+          <div
+            onClick={() => setTheme('light')}
+            className={`p-5 rounded-2xl border cursor-pointer transition-all flex items-center gap-4 ${
+              theme === 'light'
+                ? 'border-blue-500 bg-blue-500/10 shadow-md'
+                : 'border-[var(--border-subtle)] bg-[var(--pill-bg)] hover:border-slate-500'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-amber-500 flex-shrink-0 shadow-sm">
+              <Sun className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[var(--text-main)]">Light Mode</p>
+              <p className="text-xs text-[var(--text-muted)]">Clean, daylight-optimized minimalist interface</p>
+            </div>
+            {theme === 'light' && <Check className="w-5 h-5 text-blue-500 ml-auto" />}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── 6. SAVE ACTION BAR ─── */}
+      <div className="flex items-center justify-between pt-4">
+        <span className="text-xs text-[var(--text-muted)] font-medium">
+          Settings are automatically synced across browser sessions.
+        </span>
+
+        <button
+          onClick={handleSave}
+          className="px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs sm:text-sm transition-all shadow-lg shadow-blue-600/30 flex items-center gap-2"
+        >
+          {savedSuccess ? (
+            <>
+              <Check className="w-4 h-4 text-emerald-300" />
+              <span>Preferences Saved!</span>
+            </>
+          ) : (
+            <span>Save Preferences</span>
+          )}
+        </button>
       </div>
     </div>
   );

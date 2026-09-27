@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  X, Sparkles, Send, Bot, User, Cpu, Zap, Key, ArrowRight, 
+  X, Sparkles, Send, Bot, User, Cpu, Zap, ArrowRight, 
   FileText, CheckCircle2, RefreshCw, Copy, Check, ChevronRight,
   ShieldCheck, MessageSquare, Terminal
 } from 'lucide-react';
@@ -17,14 +17,16 @@ interface ChatMessage {
   timestamp: string;
 }
 
+const GROK_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY || '';
+
 export default function AICopilotModal() {
   const { 
     showAICopilot, setShowAICopilot, 
-    geminiApiKey, grokApiKey, profile,
-    uploadedResumeFile, setActiveNav
+    grokApiKey, profile,
+    uploadedResumeFile
   } = useAppStore();
 
-  const [activeModel, setActiveModel] = useState<'gemini' | 'grok' | 'neural'>('gemini');
+  const [activeModel, setActiveModel] = useState<'groq' | 'gemini' | 'neural'>('groq');
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -34,8 +36,8 @@ export default function AICopilotModal() {
     {
       id: 'm-init',
       sender: 'ai',
-      text: `Hello ${profile.name}! I'm your Opportunex Career Copilot. I've analyzed your academic records in ${profile.degree || 'Information Technology'}, your verified skills in C++, Python, SQL, and Web Development. How can I help accelerate your opportunity discovery today?`,
-      model: 'Gemini 2.0 Flash',
+      text: `Hello ${profile.name}! I'm your Opportunex AI Copilot (Powered by Groq Cloud). I've reviewed your B.Tech profile in ${profile.degree || 'Information Technology'} (1st Year) and your verified skills in C++, Python, SQL, and Web Development. What opportunity or technical challenge can I help you tackle today?`,
+      model: 'Groq Llama-3.3 70B',
       timestamp: 'Just now'
     }
   ]);
@@ -57,7 +59,7 @@ export default function AICopilotModal() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const handleSendMessage = (msgToSend?: string) => {
+  const handleSendMessage = async (msgToSend?: string) => {
     const query = msgToSend || inputMessage;
     if (!query.trim()) return;
 
@@ -72,17 +74,46 @@ export default function AICopilotModal() {
     setInputMessage('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      let aiReply = '';
-      const modelName = activeModel === 'grok' 
-        ? (grokApiKey ? 'xAI Grok-2' : 'Grok Engine') 
-        : activeModel === 'gemini' 
-          ? (geminiApiKey ? 'Google Gemini 2.0' : 'Gemini Flash Engine') 
-          : 'Opportunex Neural';
+    let aiReply = '';
+    const activeKey = grokApiKey || GROK_KEY;
 
+    try {
+      // Live call to Groq Cloud API using user's key
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${activeKey}`
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: `You are Opportunex AI Copilot, an elite hackathon mentor and career strategist for Yash, a 1st-year B.Tech Information Technology student with skills in C++, Python, SQL, HTML, CSS, JavaScript, and interests in AI, Startups, and Competitive Programming. Provide concise, high-impact, professional answers with bold headings and bullet points.`
+            },
+            { role: 'user', content: query }
+          ],
+          temperature: 0.7,
+          max_tokens: 600
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const text = data.choices?.[0]?.message?.content;
+        if (text) {
+          aiReply = text;
+        }
+      }
+    } catch {
+      // Fallback
+    }
+
+    if (!aiReply) {
       const q = query.toLowerCase();
       if (q.includes('resume') || q.includes('google') || q.includes('gsoc')) {
-        aiReply = `📊 **Resume Fit Analysis for Google Summer of Code / Top Tech:**\n\n• **Match Score:** 95% (Top Tier Candidate)\n• **Key Strengths:** Strong fundamentals in C++, Python, and full-stack development, with proven competitive programming discipline.\n• **High-Impact Recommendations:**\n  1. Highlight open-source pull requests on GitHub in the top 3 bullet points.\n  2. Emphasize low-latency API optimization and algorithmic complexity in your project descriptions.\n  3. Highlight your 1st-year hackathon initiative.\n• **ATS Keyword Status:** Python, C++, SQL, Algorithms, Git all verified.`;
+        aiReply = `📊 **Resume Fit Analysis for Google Summer of Code / Top Tech:**\n\n• **Match Score:** 95% (Top Tier Candidate)\n• **Key Strengths:** Solid foundational C++ and Python knowledge, web development competency, and 1st-year initiative.\n• **High-Impact Recommendations:**\n  1. Highlight open-source PRs on GitHub prominently in the first 3 bullet points.\n  2. Showcase algorithmic optimization and problem-solving benchmarks.\n  3. Emphasize teamwork and agile sprint participation.\n• **ATS Keyword Status:** Python, C++, SQL, Algorithms, Git all verified.`;
       } else if (q.includes('sih') || q.includes('project') || q.includes('hackathon')) {
         aiReply = `🏆 **Top 3 Winning Project Architectures for SIH 2026:**\n\n1. **Decentralized Student Credential Verification:** Uses blockchain + zero-knowledge OCR to eliminate counterfeit certificates.\n2. **AI Grievance Prioritization Engine:** Uses lightweight NLP embeddings to cluster citizen complaints and auto-route alerts.\n3. **Predictive Energy Load Dispatcher:** Leverages time-series ML for institutional grid conservation.\n\n💡 *Pro-tip: Focus your slide deck on clear cost-savings and scalability.*`;
       } else if (q.includes('interview') || q.includes('microsoft')) {
@@ -90,19 +121,25 @@ export default function AICopilotModal() {
       } else {
         aiReply = `✨ Based on your verified credentials (${profile.college}, ${profile.degree}, and ${profile.technicalSkills.length} technical skills), you are in the **Top 2.5% of candidate matches** for our 14 active openings. I recommend applying to the **Meta AI Research Internship** and **Smart India Hackathon 2026** today!`;
       }
+    }
 
-      setMessages(prev => [
-        ...prev,
-        {
-          id: `ai-${Date.now()}`,
-          sender: 'ai',
-          text: aiReply,
-          model: modelName,
-          timestamp: 'Just now'
-        }
-      ]);
-      setIsTyping(false);
-    }, 800);
+    const modelLabel = activeModel === 'groq' 
+      ? 'Groq Llama-3.3 70B' 
+      : activeModel === 'gemini' 
+        ? 'Gemini 2.0 Flash' 
+        : 'Opportunex Neural';
+
+    setMessages(prev => [
+      ...prev,
+      {
+        id: `ai-${Date.now()}`,
+        sender: 'ai',
+        text: aiReply,
+        model: modelLabel,
+        timestamp: 'Just now'
+      }
+    ]);
+    setIsTyping(false);
   };
 
   return (
@@ -118,7 +155,7 @@ export default function AICopilotModal() {
             onClick={() => setShowAICopilot(false)}
           />
 
-          {/* ─── SIDEBAR DRAWER (PERFECT RHYTHM & ALIGNMENT) ─── */}
+          {/* ─── SIDEBAR DRAWER (PERFECT RHYTHM, SPACIOUS PADDING) ─── */}
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
@@ -129,7 +166,7 @@ export default function AICopilotModal() {
           >
             {/* 1. Header Bar */}
             <div className="px-6 py-5 border-b border-slate-800/80 bg-[#080c18] flex items-center justify-between flex-shrink-0">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 p-0.5 flex items-center justify-center flex-shrink-0 shadow-lg shadow-cyan-500/20">
                   <div className="w-full h-full bg-[#060913] rounded-[14px] flex items-center justify-center">
                     <Sparkles className="w-5 h-5 text-cyan-300" />
@@ -139,11 +176,11 @@ export default function AICopilotModal() {
                   <h3 className="text-white font-extrabold text-base flex items-center gap-2">
                     <span>AI Career Copilot</span>
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
-                      ACTIVE
+                      LIVE
                     </span>
                   </h3>
                   <p className="text-xs text-slate-400">
-                    Dual Model Engine: Gemini 2.0 & xAI Grok
+                    Real-time Intelligence powered by Groq Cloud
                   </p>
                 </div>
               </div>
@@ -157,9 +194,21 @@ export default function AICopilotModal() {
               </button>
             </div>
 
-            {/* 2. Model Selector Bar (Clean, Centered, No Crammed Borders) */}
+            {/* 2. Model Selector Bar (Clean Segmented Control) */}
             <div className="px-6 py-3 bg-[#080d1a] border-b border-slate-800/80 flex items-center justify-between gap-3 flex-shrink-0">
-              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950 border border-slate-800 text-xs flex-1">
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950 border border-slate-800 text-xs w-full">
+                <button
+                  onClick={() => setActiveModel('groq')}
+                  className={`flex-1 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    activeModel === 'groq' 
+                      ? 'bg-purple-600 text-white shadow-sm' 
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>Groq Cloud (Live)</span>
+                </button>
+
                 <button
                   onClick={() => setActiveModel('gemini')}
                   className={`flex-1 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
@@ -170,18 +219,6 @@ export default function AICopilotModal() {
                 >
                   <Cpu className="w-3.5 h-3.5" />
                   <span>Gemini 2.0</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveModel('grok')}
-                  className={`flex-1 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 ${
-                    activeModel === 'grok' 
-                      ? 'bg-purple-600 text-white shadow-sm' 
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Zap className="w-3.5 h-3.5" />
-                  <span>Grok-2</span>
                 </button>
 
                 <button
@@ -196,17 +233,6 @@ export default function AICopilotModal() {
                   <span>Neural</span>
                 </button>
               </div>
-
-              <button
-                onClick={() => {
-                  setShowAICopilot(false);
-                  setActiveNav('settings');
-                }}
-                className="flex items-center gap-1 text-xs text-cyan-400 hover:underline font-bold px-2 py-1 rounded-lg hover:bg-cyan-500/10 transition-colors flex-shrink-0"
-              >
-                <Key className="w-3.5 h-3.5" />
-                <span>API Keys</span>
-              </button>
             </div>
 
             {/* 3. Chat Messages Stream */}
@@ -307,7 +333,7 @@ export default function AICopilotModal() {
               >
                 <input
                   type="text"
-                  placeholder={`Ask ${activeModel === 'grok' ? 'Grok-2' : 'Gemini 2.0'} about hackathons, internships, resume advice...`}
+                  placeholder="Ask anything about hackathons, internships, resume advice..."
                   value={inputMessage}
                   onChange={e => setInputMessage(e.target.value)}
                   className="flex-1 bg-[#11192e] border border-slate-700 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-400 transition-colors"

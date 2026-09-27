@@ -371,29 +371,7 @@ export default function HomePage() {
         </main>
       </div>
 
-      {/* ── CORNER CIRCLE AI DASHBOARD BUTTON (REQUESTED BY USER IN CORNER WITH GOOD LOGO) ── */}
-      <div className="fixed bottom-6 right-6 z-40">
-        <motion.button
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setShowAICopilot(true)}
-          className="relative group p-0.5 rounded-full bg-gradient-to-tr from-cyan-400 via-indigo-500 to-purple-600 shadow-2xl shadow-cyan-500/40 cursor-pointer"
-          title="Open AI Career Copilot Dashboard (Gemini & Grok)"
-          id="corner-ai-circle-btn"
-        >
-          {/* Pulsing halo ring */}
-          <span className="absolute -inset-1 rounded-full bg-gradient-to-tr from-cyan-400 to-purple-600 opacity-60 blur-md group-hover:opacity-100 transition-opacity animate-pulse" />
 
-          {/* Inner circle badge with good AI logo */}
-          <div className="relative w-14 h-14 rounded-full bg-[#080c16] flex flex-col items-center justify-center text-white border border-white/20 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-transparent to-purple-500/20" />
-            <Cpu className="w-6 h-6 text-cyan-400 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-            <span className="text-[9px] font-black text-cyan-300 tracking-tighter relative z-10 uppercase -mt-0.5">
-              AI
-            </span>
-          </div>
-        </motion.button>
-      </div>
 
       {/* ── OVERLAYS: Clean Transparent Passport Modal, AI Copilot Dashboard, Saved Drawer, Detail Modal ── */}
       <ProfileModal />

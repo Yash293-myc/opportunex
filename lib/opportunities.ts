@@ -265,7 +265,7 @@ export const opportunities: Opportunity[] = [
 ];
 
 export type Category = "All" | "Internship" | "Hackathon" | "Course" | "Scholarship" | "OpenSource";
-export type Interest = "AI/ML" | "Web Dev" | "Cloud" | "Open Source" | "UI/UX";
+export type Interest = "AI/ML" | "Web Dev" | "Cloud" | "Open Source" | "UI/UX" | "AI" | "Software Development" | "Hackathons" | "Startups" | "Competitive Programming" | string;
 
 export function calculateMatchScore(
   studentSkills: string[],
