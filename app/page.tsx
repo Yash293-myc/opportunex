@@ -236,10 +236,10 @@ export default function HomePage() {
                 <p className="text-[11px] font-semibold text-teal-400 truncate">
                   {profile?.degree || 'B.Tech CSE'} • <span className="font-extrabold">{profile?.education[0]?.cgpa || '8.7'} CGPA</span>
                 </p>
-                <p className="text-[10px] text-[var(--text-muted)] truncate flex items-center gap-1 mt-0.5">
+                <div className="text-[10px] text-[var(--text-muted)] truncate flex items-center gap-1 mt-0.5">
                   <CollegeCrestLogo className="w-3.5 h-3.5" />
                   <span>{profile?.college || 'XYZ Institute of Technology'}</span>
-                </p>
+                </div>
               </div>
             </div>
 
